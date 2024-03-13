@@ -1,5 +1,6 @@
 const { Events, bold, messageLink, inlineCode, blockQuote } = require('discord.js');
 const translate = require('google-translate-api-x');
+const languages = require('../utils/languages.json');
 require('dotenv').config();
 
 module.exports = {
@@ -16,45 +17,16 @@ module.exports = {
         if (user.id == process.env.BOT_ID) return;
 
         const message = reaction.message.content;
-        let language = "en";
+        const language = reaction.emoji.name;
 
-        switch (reaction.emoji.name) {
-            case '🇧🇩':
-                language = "bn";
-                break;
-            case '🇪🇸':
-                language = "es";
-                break;
-            case '🇧🇷':
-                language = "pt";
-                break;
-            case '🇹🇷':
-                language = "tr";
-                break;
-            case '🇮🇩':
-                language = "id";
-                break;
-            case '🇷🇺':
-                language = "ru";
-                break;
-            case '🇺🇦':
-                language = "uk";
-                break;
-            case '🇫🇷':
-                language = "fr";
-                break;
-            case '🇮🇹':
-                language = "it";
-                break;
-            default:
-                return;
-        }
+        if (!languages[language]) return;
 
-        const translation = await translate(message, { to: language });
-        const embedTranslation = await getEmbedTranslation(reaction.message, language);
+        const translation = await translate(message, { to: languages[language] });
+        const embedTranslation = await getEmbedTranslation(reaction.message, languages[language]);
+
 
         const finalTranslation = {
-            text: translation.text + '\n' + blockQuote(embedTranslation.text),
+            text: translation.text + '\n' + (embedTranslation.text ? blockQuote(embedTranslation.text) : ''),
             from: (translation.text) ? translation.from.language.iso : embedTranslation.from
         };
 
