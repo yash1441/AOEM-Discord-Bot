@@ -14,7 +14,7 @@ module.exports = {
             }
         }
 
-        if (user.id == process.env.BOT_ID) return;
+        if (user.id == process.env.BOT_ID || reaction.message.channelId != process.env.ANNOUNCEMENT_CHANNEL) return;
 
         const message = reaction.message.content;
         const language = reaction.emoji.name;
