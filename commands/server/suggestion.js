@@ -33,7 +33,7 @@ module.exports = {
 
         if (attachment) embed.setImage(attachment.url);
 
-        const suggestionChannel = client.channels.cache.get(process.env.SUGGESTION_CHANNEL);
+        const suggestionChannel = await interaction.client.channels.cache.get(process.env.SUGGESTION_CHANNEL);
 
         const suggestion = await suggestionChannel.send({ embeds: [embed] });
 
