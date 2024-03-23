@@ -43,7 +43,7 @@ module.exports = {
             }, 2_000);
         }
 
-        await interaction.channel.send({ content: 'Please give a detailed description of the problem you have encountered, preferably with screenshots and videos to help us quickly determine the root cause of the problem.' });
+        await interaction.channel.send({ content: 'Please give a detailed description of the problem you have encountered, preferably with a screenshot to help us quickly determine the root cause of the problem.' });
 
         await interaction.channel.awaitMessages({
             filter: collectorFilter,
