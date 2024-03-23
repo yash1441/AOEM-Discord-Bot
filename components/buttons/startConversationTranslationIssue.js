@@ -125,10 +125,9 @@ module.exports = {
             .setTimestamp();
 
         if (userData.screenshot) {
-            embed.setImage(userData.screenshot);
-
-            const imageUrl = await ImgBB(userData.screenshot);
+            userData.screenshotUrl = await ImgBB(userData.screenshot);
             userData.screenshotFunction = '=HYPERLINK("' + imageUrl + '", IMAGE("' + imageUrl + '", 1))'
+            embed.setImage(userData.screenshotUrl);
         } else {
             userData.screenshotFunction = '-'
         }
