@@ -124,15 +124,21 @@ module.exports = {
             .setColor('Blue')
             .setTimestamp();
 
-        if (userData.screenshot) embed.setImage(userData.screenshot);
+        if (userData.screenshot) {
+            embed.setImage(userData.screenshot);
+
+            const imageUrl = await ImgBB(userData.screenshot);
+            userData.screenshotFunction = '=HYPERLINK("' + imageUrl + '", IMAGE("' + imageUrl + '", 1))'
+        } else {
+            userData.screenshotFunction = '-'
+        }
 
         const channel = interaction.client.channels.cache.get(process.env.TRANSLATION_CHANNEL);
         await channel.send({ embeds: [embed] });
 
         const now = new Date();
-        const imageUrl = await ImgBB(userData.screenshot);
 
-        await Sheets.appendRow(process.env.FEEDBACK_SHEET, 'Translation!A2:Z', [[interaction.user.id, interaction.user.username, userData.governorId, userData.details, userData.deviceInfo, userData.timeOfOccurence, date.format(now, 'MM-DD-YYYY'), '=HYPERLINK("' + imageUrl + '", IMAGE("' + imageUrl + '", 1))' ]]);
+        await Sheets.appendRow(process.env.FEEDBACK_SHEET, 'Translation!A2:Z', [[interaction.user.id, interaction.user.username, userData.governorId, userData.details, userData.deviceInfo, userData.timeOfOccurence, date.format(now, 'MM-DD-YYYY'), userData.screenshotFunction ]]);
 
         await interaction.channel.send({ content: 'This thread will be deleted in 10 seconds.' });
 
