@@ -132,7 +132,7 @@ module.exports = {
         const now = new Date();
         const imageUrl = await ImgBB(userData.screenshot);
 
-        await Sheets.appendRow(process.env.FEEDBACK_SHEET, 'Translation!A2:Z', [[interaction.user.id, interaction.user.username, userData.governorId, userData.details, userData.deviceInfo, userData.timeOfOccurence, date.format(now, 'MM-DD-YYYY'), '=HYPERLINK("' + imageUrl + '", =IMAGE("' + imageUrl + '", 1))' ]]);
+        await Sheets.appendRow(process.env.FEEDBACK_SHEET, 'Translation!A2:Z', [[interaction.user.id, interaction.user.username, userData.governorId, userData.details, userData.deviceInfo, userData.timeOfOccurence, date.format(now, 'MM-DD-YYYY'), '=HYPERLINK("' + imageUrl + '", IMAGE("' + imageUrl + '", 1))' ]]);
 
         await interaction.channel.send({ content: 'This thread will be deleted in 10 seconds.' });
 
