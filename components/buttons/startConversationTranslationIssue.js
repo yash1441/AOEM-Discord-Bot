@@ -125,6 +125,14 @@ module.exports = {
             .setColor('Blue')
             .setTimestamp();
 
+        if (!userData.governorId) userData.governorId = '-';
+
+        if (!userData.deviceInfo) userData.deviceInfo = '-';
+
+        if (!userData.timeOfOccurence) userData.timeOfOccurence = '-';
+
+        if (!userData.details) userData.details = '-';
+
         if (userData.screenshot) {
             userData.screenshotUrl = await ImgBB(userData.screenshot);
             userData.screenshotFunction = '=HYPERLINK("' + userData.screenshotUrl + '", IMAGE("' + userData.screenshotUrl + '", 1))'
