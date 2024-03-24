@@ -51,7 +51,8 @@ module.exports = {
             max: 1,
             errors: ['time']
         }).then(messages => {
-            userData.details = messages.first().content;
+            if (!messages.first().content) userData.details = "-"
+            else userData.details = messages.first().content;
             const attachment = messages.first().attachments.first();
 
             if (attachment && attachment.contentType.includes('image')) userData.screenshot = attachment.proxyURL;
@@ -126,7 +127,7 @@ module.exports = {
 
         if (userData.screenshot) {
             userData.screenshotUrl = await ImgBB(userData.screenshot);
-            userData.screenshotFunction = '=HYPERLINK("' + imageUrl + '", IMAGE("' + imageUrl + '", 1))'
+            userData.screenshotFunction = '=HYPERLINK("' + userData.screenshotUrl + '", IMAGE("' + userData.screenshotUrl + '", 1))'
             embed.setImage(userData.screenshotUrl);
         } else {
             userData.screenshotFunction = '-'
