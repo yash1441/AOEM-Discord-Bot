@@ -1,4 +1,4 @@
-const { EmbedBuilder, ActionRowBuilder, inlineCode } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, inlineCode, bold, italic } = require('discord.js');
 const date = require('date-and-time');
 const Sheets = require('../../utils/sheets');
 const ImgBB = require('../../utils/imgbb');
