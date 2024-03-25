@@ -1,4 +1,4 @@
-const { EmbedBuilder, ActionRowBuilder, messageLink, inlineCode } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, inlineCode } = require('discord.js');
 const date = require('date-and-time');
 const Sheets = require('../../utils/sheets');
 const ImgBB = require('../../utils/imgbb');
@@ -83,7 +83,7 @@ module.exports = {
         });
 
         if (timedOut) {
-            await interaction.channel.send({ content: 'You did not provide detailed description in time. This thread will be deleted.' });
+            await interaction.channel.send({ content: 'You did not provide device info in time. This thread will be deleted.' });
             setTimeout(function () {
                 interaction.channel.delete().catch();
             }, 2_000);
@@ -102,6 +102,13 @@ module.exports = {
         }).catch(() => {
             timedOut = true;
         });
+
+        if (timedOut) {
+            await interaction.channel.send({ content: 'You did not provide time of occurence in time. This thread will be deleted.' });
+            setTimeout(function () {
+                interaction.channel.delete().catch();
+            }, 2_000);
+        }
 
         const embed = new EmbedBuilder()
             .setTitle('Translation Issue')
@@ -126,12 +133,9 @@ module.exports = {
             .setTimestamp();
 
         if (!userData.governorId) userData.governorId = '-';
-
-        if (!userData.deviceInfo) userData.deviceInfo = '-';
-
-        if (!userData.timeOfOccurence) userData.timeOfOccurence = '-';
-
         if (!userData.details) userData.details = '-';
+        if (!userData.deviceInfo) userData.deviceInfo = '-';
+        if (!userData.timeOfOccurence) userData.timeOfOccurence = '-';
 
         if (userData.screenshot) {
             userData.screenshotUrl = await ImgBB(userData.screenshot);
