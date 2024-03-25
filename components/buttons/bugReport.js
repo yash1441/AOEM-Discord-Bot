@@ -49,9 +49,6 @@ module.exports = {
                     name: '\u200B', value: 'Please provide us with more information regarding the above types of issues, so that the community mod can provide you with further responses.', inline: false
                 },
                 {
-                    name: '\u200B', value: 'Please note that the person responding to you include the users with Community Team (the official) and Mods role (enthusiastic players of AoE Mobile like you). Due to a large number of submissions, there may be a delay in the response. Please be patient!', inline: false
-                },
-                {
                     name: '\u200B', value: 'If you would like to continue, please answer some of our questions.', inline: false
                 })
             .setColor('White');

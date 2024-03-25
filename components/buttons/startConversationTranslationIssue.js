@@ -1,4 +1,4 @@
-const { EmbedBuilder, ActionRowBuilder, inlineCode, bold, italic } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, inlineCode, bold, italic, blockQuote } = require('discord.js');
 const date = require('date-and-time');
 const Sheets = require('../../utils/sheets');
 const ImgBB = require('../../utils/imgbb');
@@ -22,7 +22,7 @@ module.exports = {
 
         const collectorFilter = m => interaction.user.id === m.author.id;
 
-        await interaction.channel.send({ content: bold('Firstly, please provide your Governor ID. ') + italic('Only text message can be recorded') });
+        await interaction.channel.send({ content: blockQuote(bold('Firstly, please provide your Governor ID.\n')) + italic('(Only text message can be recorded)') });
 
         await interaction.channel.awaitMessages({
             filter: collectorFilter,
@@ -31,7 +31,7 @@ module.exports = {
             errors: ['time']
         }).then(messages => {
             userData.governorId = messages.first().content;
-            interaction.channel.send({ content: italic('Received. Next question.') });
+            interaction.channel.send({ content: 'Received. Next question.' });
         }).catch(() => {
             timedOut = true;
         });
@@ -43,7 +43,7 @@ module.exports = {
             }, 2_000);
         }
 
-        await interaction.channel.send({ content: bold('Please give a detailed description of the problem you have encountered, preferably with a screenshot to help us quickly determine the root cause of the problem.') });
+        await interaction.channel.send({ content: blockQuote(bold('Please give a detailed description of the problem you have encountered, preferably with a screenshot to help us quickly determine the root cause of the problem.')) });
 
         await interaction.channel.awaitMessages({
             filter: collectorFilter,
@@ -55,7 +55,7 @@ module.exports = {
             const attachment = messages.first().attachments.first();
 
             if (attachment && attachment.contentType.includes('image')) userData.screenshot = attachment.proxyURL;
-            interaction.channel.send({ content: bold('Thanks a lot for your feedback. Now, we need collect some basic information.') });
+            interaction.channel.send({ content: 'Thanks a lot for your feedback. Now, we need collect some basic information.' });
         }).catch(() => {
             timedOut = true;
         });
@@ -67,7 +67,7 @@ module.exports = {
             }, 2_000);
         }
 
-        await interaction.channel.send({ content: bold('Please provide your device model, operating system, and game version in a single message. ') + italic('(Only text message can be recorded)') });
+        await interaction.channel.send({ content: blockQuote(bold('Please provide your device model, operating system, and game version in a single message.\n')) + italic('(Only text message can be recorded)') });
 
         await interaction.channel.awaitMessages({
             filter: collectorFilter,
@@ -88,7 +88,7 @@ module.exports = {
             }, 2_000);
         }
 
-        await interaction.channel.send({ content: bold('What time did this issue occur (server time, UTC+0)? Is it mandatory or occasional?') + italic('(Only text message can be recorded)') });
+        await interaction.channel.send({ content: blockQuote(bold('What time did this issue occur (server time, UTC+0)? Is it mandatory or occasional?\n')) + italic('(Only text message can be recorded)') });
 
         await interaction.channel.awaitMessages({
             filter: collectorFilter,
@@ -97,7 +97,7 @@ module.exports = {
             errors: ['time']
         }).then(messages => {
             userData.timeOfOccurence = (messages.first().content) ? messages.first().content : "-";
-            interaction.channel.send({ content: bold('Thanks for your patience. Your feedback is important for the smooth operation of the game. If the problem you reported is verified to be genuine, the official will provide you a reward in the future.') });
+            interaction.channel.send({ content: 'Thanks for your patience. Your feedback is important for the smooth operation of the game. If the problem you reported is verified to be genuine, the official will provide you a reward in the future.' });
         }).catch(() => {
             timedOut = true;
         });
@@ -151,7 +151,7 @@ module.exports = {
 
         await Sheets.appendRow(process.env.FEEDBACK_SHEET, 'Translation!A2:Z', [[interaction.user.id, interaction.user.username, userData.governorId, userData.details, userData.deviceInfo, userData.timeOfOccurence, date.format(now, 'MM-DD-YYYY'), userData.screenshotFunction ]]);
 
-        await interaction.channel.send({ content: 'This thread will be deleted in 10 seconds.' });
+        await interaction.channel.send({ content: bold('This thread will be deleted in 10 seconds.') });
 
         setTimeout(function () {
             interaction.channel.delete().catch();
