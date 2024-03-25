@@ -51,8 +51,7 @@ module.exports = {
             max: 1,
             errors: ['time']
         }).then(messages => {
-            if (!messages.first().content) userData.details = "-"
-            else userData.details = messages.first().content;
+            userData.details = (messages.first().content) ? messages.first().content : "-";
             const attachment = messages.first().attachments.first();
 
             if (attachment && attachment.contentType.includes('image')) userData.screenshot = attachment.proxyURL;
@@ -76,7 +75,7 @@ module.exports = {
             max: 1,
             errors: ['time']
         }).then(messages => {
-            userData.deviceInfo = messages.first().content;
+            userData.deviceInfo = (messages.first().content) ? messages.first().content : "-";
             interaction.channel.send({ content: 'Received. One last question!' });
         }).catch(() => {
             timedOut = true;
@@ -97,7 +96,7 @@ module.exports = {
             max: 1,
             errors: ['time']
         }).then(messages => {
-            userData.timeOfOccurence = messages.first().content;
+            userData.timeOfOccurence = (messages.first().content) ? messages.first().content : "-";
             interaction.channel.send({ content: 'Thanks for your patience. Your feedback is important for the smooth operation of the game. If the problem you reported is verified to be genuine, the official will provide you a reward in the future.' });
         }).catch(() => {
             timedOut = true;
