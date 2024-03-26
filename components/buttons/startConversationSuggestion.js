@@ -121,7 +121,8 @@ module.exports = {
         }
 
         const channel = interaction.client.channels.cache.get(process.env.SUGGESTION_CHANNEL);
-        await channel.send({ embeds: [embed] });
+        const message = await channel.send({ embeds: [embed] });
+        await message.react('✅').then(message.react('❌'));
 
         const now = new Date();
 
