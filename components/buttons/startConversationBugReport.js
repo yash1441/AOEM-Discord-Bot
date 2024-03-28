@@ -54,8 +54,8 @@ module.exports = {
             userData.details = (messages.first().content) ? messages.first().content : "-";
 
             const attachment = messages.first().attachments.first();
-
             if (attachment && attachment.contentType.includes('image')) userData.screenshot = attachment.proxyURL;
+
             interaction.channel.send({ content: 'Thanks a lot for your feedback. Now, we need collect some basic information.' });
         }).catch(() => {
             timedOut = true;
@@ -110,32 +110,22 @@ module.exports = {
             }, 2_000);
         }
 
-        const embed = new EmbedBuilder()
-            .setTitle('Bug Report')
-            .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
-            .addFields({
-                name: 'Governor ID',
-                value: inlineCode(userData.governorId),
-            },
-                {
-                    name: 'Details',
-                    value: userData.details,
-                },
-                {
-                    name: 'Device Info',
-                    value: userData.deviceInfo,
-                },
-                {
-                    name: 'Time of Occurence',
-                    value: userData.timeOfOccurence,
-                })
-            .setColor('Red')
-            .setTimestamp();
-
         if (!userData.governorId) userData.governorId = '-';
         if (!userData.details) userData.details = '-';
         if (!userData.deviceInfo) userData.deviceInfo = '-';
         if (!userData.timeOfOccurence) userData.timeOfOccurence = '-';
+
+        const embed = new EmbedBuilder()
+            .setTitle('Bug Report')
+            .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
+            .setDescription(bold('Details') + userData.details)
+            .addFields(
+                { name: 'Governor ID', value: inlineCode(userData.governorId) },
+                { name: 'Device Info', value: userData.deviceInfo },
+                { name: 'Time of Occurence', value: userData.timeOfOccurence }
+            )
+            .setColor('Red')
+            .setTimestamp();
 
         if (userData.screenshot) {
             userData.screenshotUrl = await ImgBB(userData.screenshot);

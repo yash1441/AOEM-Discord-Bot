@@ -51,11 +51,11 @@ module.exports = {
             max: 1,
             errors: ['time']
         }).then(messages => {
-            if (!messages.first().content) userData.details = "-"
-            else userData.details = messages.first().content;
-            const attachment = messages.first().attachments.first();
+            userData.details = (messages.first().content) ? messages.first().content : "-";
 
+            const attachment = messages.first().attachments.first();
             if (attachment && attachment.contentType.includes('image')) userData.screenshot = attachment.proxyURL;
+
             interaction.channel.send({ content: 'Thanks a lot for your suggestions. Now, we need collect some basic information.' });
         }).catch(() => {
             timedOut = true;
@@ -89,28 +89,20 @@ module.exports = {
             }, 2_000);
         }
 
+        if (!userData.governorId) userData.governorId = '-';
+        if (!userData.details) userData.details = '-';
+        if (!userData.timeOfOccurence) userData.rating = '-';
 
         const embed = new EmbedBuilder()
             .setTitle('Suggestion')
             .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
-            .addFields({
-                name: 'Governor ID',
-                value: inlineCode(userData.governorId),
-            },
-                {
-                    name: 'Details',
-                    value: userData.details,
-                },
-                {
-                    name: 'Rating',
-                    value: userData.rating,
-                })
+            .setDescription(bold('Details') + userData.details)
+            .addFields(
+                { name: 'Governor ID', value: inlineCode(userData.governorId) },
+                { name: 'Rating', value: userData.rating }
+            )
             .setColor('Green')
             .setTimestamp();
-
-        if (!userData.governorId) userData.governorId = '-';
-        if (!userData.details) userData.details = '-';
-        if (!userData.timeOfOccurence) userData.rating = '-';
 
         if (userData.screenshot) {
             userData.screenshotUrl = await ImgBB(userData.screenshot);
