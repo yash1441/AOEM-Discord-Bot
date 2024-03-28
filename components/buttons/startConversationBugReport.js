@@ -118,7 +118,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Bug Report')
             .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
-            .setDescription(bold('Details') + userData.details)
+            .setDescription(bold('Details') + '\n' + userData.details)
             .addFields(
                 { name: 'Governor ID', value: inlineCode(userData.governorId) },
                 { name: 'Device Info', value: userData.deviceInfo },
