@@ -42,6 +42,7 @@ module.exports = {
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
+            return;
         }
 
         await thread.send({ content: blockQuote(bold('Please give a detailed description of the problem you have encountered, preferably with a screenshot to help us quickly determine the root cause of the problem.')) });
@@ -67,6 +68,7 @@ module.exports = {
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
+            return;
         }
 
         await thread.send({ content: blockQuote(bold('Please provide your device model, operating system, and game version in a single message.\n')) + italic('(Only text message can be recorded)') });
@@ -88,6 +90,7 @@ module.exports = {
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
+            return;
         }
 
         await thread.send({ content: blockQuote(bold('What time did this issue occur (server time, UTC+0)? Is it mandatory or occasional?\n')) + italic('(Only text message can be recorded)') });
@@ -109,6 +112,7 @@ module.exports = {
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
+            return;
         }
 
         if (!userData.governorId) userData.governorId = '-';

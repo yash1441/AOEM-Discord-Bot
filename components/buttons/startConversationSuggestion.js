@@ -42,6 +42,7 @@ module.exports = {
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
+            return;
         }
 
         await thread.send({ content: blockQuote(bold('Please give a detailed description of your feedback and suggestion, preferably with a screenshot to help us quickly locate the features or systems in your description.')) });
@@ -67,6 +68,7 @@ module.exports = {
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
+            return;
         }
 
         await thread.send({ content: blockQuote(bold('Could you rate the importance of the suggestions you have provided? Reference: 1 star (not important) -5 stars (very important, greatly helpful for improving game experience)\n')) + italic('(Only text message can be recorded)') });
@@ -88,6 +90,7 @@ module.exports = {
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
+            return;
         }
 
         if (!userData.governorId) userData.governorId = '-';
