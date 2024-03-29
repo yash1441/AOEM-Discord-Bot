@@ -27,7 +27,7 @@ module.exports = {
 
         await thread.awaitMessages({
             filter: collectorFilter,
-            time: 60_000,
+            time: 3_00_000,
             max: 1,
             errors: ['time']
         }).then(messages => {
@@ -49,7 +49,7 @@ module.exports = {
 
         await thread.awaitMessages({
             filter: collectorFilter,
-            time: 60_000,
+            time: 3_00_000,
             max: 1,
             errors: ['time']
         }).then(messages => {
@@ -75,7 +75,7 @@ module.exports = {
 
         await thread.awaitMessages({
             filter: collectorFilter,
-            time: 60_000,
+            time: 3_00_000,
             max: 1,
             errors: ['time']
         }).then(messages => {
@@ -97,7 +97,7 @@ module.exports = {
 
         await thread.awaitMessages({
             filter: collectorFilter,
-            time: 60_000,
+            time: 3_00_000,
             max: 1,
             errors: ['time']
         }).then(messages => {
