@@ -38,7 +38,7 @@ module.exports = {
         });
 
         if (timedOut) {
-            await thread.send({ content: bold('You did not provide your Governor ID in time. This thread will be deleted.') });
+            await thread.send({ content: bold('You did not provide your Governor ID in time. This thread will be deleted.') }).catch();
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
@@ -64,7 +64,7 @@ module.exports = {
         });
 
         if (timedOut) {
-            await thread.send({ content: bold('You did not provide detailed description in time. This thread will be deleted.') });
+            await thread.send({ content: bold('You did not provide detailed description in time. This thread will be deleted.') }).catch();
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
@@ -86,7 +86,7 @@ module.exports = {
         });
 
         if (timedOut) {
-            await thread.send({ content: bold('You did not provide rating in time. This thread will be deleted.') });
+            await thread.send({ content: bold('You did not provide rating in time. This thread will be deleted.') }).catch();
             setTimeout(function () {
                 thread.delete().catch();
             }, 2_000);
