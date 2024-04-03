@@ -33,7 +33,7 @@ module.exports = {
 
         if (!finalTranslation.text || finalTranslation.text.length > 2000) return;
 
-        await user.send({ content: bold('Translated from ' + inlineCode(finalTranslation.from) + " - ") + messageLink(reaction.message.channelId, reaction.message.id) + '\n' + finalTranslation.text }).catch(error => console.log(error));
+        await user.send({ content: bold('Translated from ' + inlineCode(finalTranslation.from) + " - ") + messageLink(reaction.message.channelId, reaction.message.id) + '\n' + finalTranslation.text }).catch(console.log(user.username + ' (' + user.id + ') does not have public DMs.'));
     }
 };
 
