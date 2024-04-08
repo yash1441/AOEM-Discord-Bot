@@ -1,4 +1,4 @@
-const { Events, bold, messageLink, inlineCode, blockQuote } = require('discord.js');
+const { Events, bold, messageLink, inlineCode, EmbedBuilder } = require('discord.js');
 const translate = require('google-translate-api-x');
 const languages = require('../utils/languages.json');
 require('dotenv').config();
@@ -26,19 +26,18 @@ module.exports = {
         const embedTranslation = await getEmbedTranslation(reaction.message, languages[language]);
 
         const finalTranslation = {
-            text: translation.text + '\n' + (embedTranslation.text ? blockQuote(embedTranslation.text) : ''),
+            text: translation.text,
             from: (translation.text) ? translation.from.language.iso : embedTranslation.from
         };
 
-        if (!finalTranslation.text) return;
+        if (!finalTranslation.text || finalTranslation.text.length > 2000) return;
 
-        if (finalTranslation.text.length > 2000) {
-            finalTranslation.text = finalTranslation.text.substring(0, 1890);
-            finalTranslation.text += '...';
-        }
+        const embeds = [];
+
+        if (embedTranslation) embeds.push(embedTranslation);
 
         try {
-            await user.send({ content: bold('Translated from ' + inlineCode(finalTranslation.from) + " - ") + messageLink(reaction.message.channelId, reaction.message.id) + '\n' + finalTranslation.text });
+            await user.send({ content: bold('Translated from ' + inlineCode(finalTranslation.from) + " - ") + messageLink(reaction.message.channelId, reaction.message.id) + '\n' + finalTranslation.text, embeds: embeds });
         } catch (error) {
             console.log(user.username + ' (' + user.id + ') does not have public DMs.');
         }
@@ -47,8 +46,11 @@ module.exports = {
 
 async function getEmbedTranslation(message, language) {
     const embed = message.embeds[0];
-    if (!embed) return { text: '', from: 'en' };
+    if (!embed) return false;
+
+    let newEmbed = new EmbedBuilder();
 
     const translation = await translate(embed.description, { to: language });
-    return { text: translation.text, from: translation.from.language.iso };
+    newEmbed.setDescription(translation.text);
+    return newEmbed;
 }
