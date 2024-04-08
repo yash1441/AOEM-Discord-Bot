@@ -25,15 +25,23 @@ module.exports = {
         const translation = await translate(message, { to: languages[language] });
         const embedTranslation = await getEmbedTranslation(reaction.message, languages[language]);
 
-
         const finalTranslation = {
             text: translation.text + '\n' + (embedTranslation.text ? blockQuote(embedTranslation.text) : ''),
             from: (translation.text) ? translation.from.language.iso : embedTranslation.from
         };
 
-        if (!finalTranslation.text || finalTranslation.text.length > 2000) return;
+        if (!finalTranslation.text) return;
 
-        await user.send({ content: bold('Translated from ' + inlineCode(finalTranslation.from) + " - ") + messageLink(reaction.message.channelId, reaction.message.id) + '\n' + finalTranslation.text }).catch(console.log(user.username + ' (' + user.id + ') does not have public DMs.'));
+        if (finalTranslation.text.length > 2000) {
+            finalTranslation.text = finalTranslation.text.substring(0, 1890);
+            finalTranslation.text += '...';
+        }
+
+        try {
+            await user.send({ content: bold('Translated from ' + inlineCode(finalTranslation.from) + " - ") + messageLink(reaction.message.channelId, reaction.message.id) + '\n' + finalTranslation.text });
+        } catch (error) {
+            console.log(user.username + ' (' + user.id + ') does not have public DMs.');
+        }
     }
 };
 
