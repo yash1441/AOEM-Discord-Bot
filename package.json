@@ -5,6 +5,8 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "google-translate-api-x": "^10.6.8",
-    "googleapis": "^134.0.0"
+    "googleapis": "^134.0.0",
+    "sequelize": "^6.37.3",
+    "sqlite3": "^5.1.7"
   }
 }
