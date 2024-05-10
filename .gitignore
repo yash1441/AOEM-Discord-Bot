@@ -133,3 +133,4 @@ dist
 .eslintrc.json
 .vscode/
 cred.json
+db/
