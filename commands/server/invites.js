@@ -51,7 +51,7 @@ module.exports = {
         if (subCommand === 'reset') {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) return await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
             await Invites.sync();
-            await Invites.truncate();
+            await Invites.update({ 'uses': 0 }, { where: {} });
             return await interaction.reply({ content: 'Invites leaderboard has been reset.', ephemeral: true });
         } else if (subCommand === 'leaderboard') {
             await interaction.deferReply({ content: 'Generating leaderboard...' });
