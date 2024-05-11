@@ -93,7 +93,7 @@ module.exports = {
         const memberId = member.user.id;
 
         const existingMember = await Members.findOne({ where: { user_id: memberId } });
-        if (existingMember) return console.log('Test');
+        if (existingMember) return console.log(memberId, ' joined the server again.');
 
         const newInvitesData = await member.guild.invites.fetch();
         const newInvitesMap = {};
