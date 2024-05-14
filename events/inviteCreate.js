@@ -41,7 +41,6 @@ module.exports = {
         const code = invite.code;
         const inviterId = invite.inviterId;
 
-        await Invites.sync({ alter: true });
         const inviteData = await Invites.create({
             code: code,
             user_id: inviterId,

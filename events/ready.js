@@ -45,7 +45,6 @@ module.exports = {
 			status: 'online'
 		});
 
-		await TotalInvites.sync();
 		const guild = await client.guilds.fetch(process.env.GUILD_ID);
 		const invites = await guild.invites.fetch();
 		for (const [code, invite] of invites) {

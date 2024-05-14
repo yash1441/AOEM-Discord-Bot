@@ -31,7 +31,6 @@ module.exports = {
     async execute(member) {
         if (member.user.bot) return;
         
-        await Members.sync();
         const memberId = member.user.id;
         const [memberData, created] = await Members.findOrCreate({
             where: { user_id: memberId },

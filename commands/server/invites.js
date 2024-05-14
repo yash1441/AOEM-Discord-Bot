@@ -80,8 +80,6 @@ module.exports = {
         ),
     async execute(interaction) {
         const subCommand = interaction.options.getSubcommand();
-        await Invites.sync({ alter: true });
-        await TotalInvites.sync();
         if (subCommand === 'reset') {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) return await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
             await Invites.update({ 'uses': 0 }, { where: {} });

@@ -91,10 +91,6 @@ module.exports = {
     async execute(member) {
         if (member.user.bot) return;
 
-        await Members.sync();
-        await TotalInvites.sync();
-        await Invites.sync({ alter: true });
-
         const memberId = member.user.id;
 
         const existingMember = await Members.findOne({ where: { user_id: memberId } });
