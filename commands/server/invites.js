@@ -22,6 +22,11 @@ const Invites = sequelize1.define('invites', {
         allowNull: false,
         defaultValue: 0,
     },
+    total_uses: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
     guild_id: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -75,7 +80,7 @@ module.exports = {
         ),
     async execute(interaction) {
         const subCommand = interaction.options.getSubcommand();
-        await Invites.sync();
+        await Invites.sync({ alter: true });
         await TotalInvites.sync();
         if (subCommand === 'reset') {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) return await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
@@ -84,7 +89,7 @@ module.exports = {
         } else if (subCommand === 'leaderboard') {
             await interaction.deferReply({ content: 'Generating leaderboard...' });
             const invites = await Invites.findAll({
-                attributes: ['user_id', 'uses'],
+                attributes: ['user_id', 'uses', 'total_uses'],
             });
             const TotalInvites = await Invites.findAll({
                 attributes: ['user_id', 'uses'],
@@ -109,7 +114,7 @@ module.exports = {
 function getTop10Invites(invites) {
     const finalInvites = [];
     for (const invite of invites) {
-        const { user_id, uses } = invite;
+        const { user_id, uses, total_uses } = invite;
         const existingInvite = finalInvites.find(invite => invite.user_id === user_id);
         (existingInvite) ? existingInvite.uses += uses : finalInvites.push({ user_id, uses });
     }

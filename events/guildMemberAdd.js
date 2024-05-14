@@ -50,6 +50,11 @@ const Invites = sequelize2.define('invites', {
         allowNull: false,
         defaultValue: 0,
     },
+    total_uses: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
     guild_id: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -85,10 +90,10 @@ module.exports = {
     name: Events.GuildMemberAdd,
     async execute(member) {
         if (member.user.bot) return;
-        
+
         await Members.sync();
         await TotalInvites.sync();
-        await Invites.sync();
+        await Invites.sync({ alter: true });
 
         const memberId = member.user.id;
 
@@ -118,8 +123,8 @@ module.exports = {
 
         console.log(memberId, ' joined using ', increasedCode);
         await Members.create({ user_id: memberId, code: increasedCode });
-        await TotalInvites.update({uses: newInvitesMap[increasedCode].uses }, { where: { code: increasedCode } });
-        await Invites.increment('uses', { where: { code: increasedCode } });
+        await TotalInvites.update({ uses: newInvitesMap[increasedCode].uses }, { where: { code: increasedCode } });
+        await Invites.increment({ 'uses': 1, 'total_uses': 1 }, { where: { code: increasedCode } });
     }
 };
 
