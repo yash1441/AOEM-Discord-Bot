@@ -70,7 +70,7 @@ module.exports = {
                 message += `${user}: ${invite.uses}\n`;
             }
             message += '\n\n### Top Alltime\n';
-            for (const invite of top) {
+            for (const invite of topAllTime) {
                 const user = userMention(invite.user_id);
                 message += `${user}: ${invite.total_uses}\n`;
             }
