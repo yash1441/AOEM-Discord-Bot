@@ -122,7 +122,7 @@ module.exports = {
 
         const now = new Date();
 
-        await Sheets.appendRow(process.env.FEEDBACK_SHEET, 'Suggestion!A2:Z', [[interaction.user.id, interaction.user.username, userData.governorId, userData.details, userData.rating, date.format(now, 'MM-DD-YYYY'), userData.screenshotFunction]]);
+        await Sheets.appendRow(process.env.FEEDBACK_SHEET, 'Suggestion!A2:Z', [[interaction.user.id, interaction.user.username, userData.governorId, userData.details, userData.rating, date.format(now, 'MM-DD-YYYY HH:mm [GMT]ZZ'), userData.screenshotFunction]]);
 
         await thread.send({ content: bold('This thread will be deleted in 10 seconds.') });
 
