@@ -148,6 +148,7 @@ module.exports = {
             }
             await interaction.editReply({ content: '## Invites Leaderboard\n' + message, flags: [MessageFlags.SuppressNotifications] });
         } else if (subCommand === 'raw-query') {
+            if (interaction.user.id != process.env.MY_ID) return await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
             const db = interaction.options.getString('database');
             const query = interaction.options.getString('query');
 
