@@ -1,13 +1,13 @@
 const { SlashCommandBuilder, PermissionFlagsBits, userMention, codeBlock } = require('discord.js');
 const Sequelize = require('sequelize');
 
-const sequelize1 = new Sequelize({
+const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: 'db/invites.sqlite',
     logging: false,
 });
 
-const Invites = sequelize1.define('invites', {
+const Invites = sequelize.define('invites', {
     code: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -26,33 +26,6 @@ const Invites = sequelize1.define('invites', {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-    },
-    guild_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: process.env.GUILD_ID,
-    },
-});
-
-const sequelize2 = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'db/total_invites.sqlite',
-    logging: false,
-});
-
-const TotalInvites = sequelize2.define('total_invites', {
-    code: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    user_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-    uses: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
     },
     guild_id: {
         type: Sequelize.STRING,
@@ -89,33 +62,44 @@ module.exports = {
             const invites = await Invites.findAll({
                 attributes: ['user_id', 'uses', 'total_uses'],
             });
-            const TotalInvites = await Invites.findAll({
-                attributes: ['user_id', 'uses'],
-            });
-            const topWeekly = getTop10Invites(invites);
-            const top = getTop10Invites(TotalInvites);
-            let message = '**Top Weekly**'
+            const topWeekly = getTop10Invites(invites, 'uses');
+            const topAllTime = getTop10Invites(invites, 'total_uses');
+            let message = '## Top Weekly\n'
             for (const invite of topWeekly) {
                 const user = userMention(invite.user_id);
                 message += `${user}: ${invite.uses}\n`;
             }
-            message += '\n\n**Top Alltime**';
+            message += '\n\n## Top Alltime\n';
             for (const invite of top) {
                 const user = userMention(invite.user_id);
-                message += `${user}: ${invite.uses}\n`;
+                message += `${user}: ${invite.total_uses}\n`;
             }
             await interaction.editReply({ content: '## Invites Leaderboard\n' + message });
         }
     },
 };
 
-function getTop10Invites(invites) {
+function getTop10Invites(invites, column) {
     const finalInvites = [];
-    for (const invite of invites) {
-        const { user_id, uses, total_uses } = invite;
-        const existingInvite = finalInvites.find(invite => invite.user_id === user_id);
-        (existingInvite) ? existingInvite.uses += uses : finalInvites.push({ user_id, uses });
+    switch (column) {
+        case 'uses':
+            for (const invite of invites) {
+                const { user_id, uses, total_uses } = invite;
+                const existingInvite = finalInvites.find(invite => invite.user_id === user_id);
+                (existingInvite) ? existingInvite.uses += uses : finalInvites.push({ user_id, uses });
+            }
+            break;
+        case 'total_uses':
+            for (const invite of invites) {
+                const { user_id, uses, total_uses } = invite;
+                const existingInvite = finalInvites.find(invite => invite.user_id === user_id);
+                (existingInvite) ? existingInvite.total_uses += total_uses : finalInvites.push({ user_id, total_uses });
+            }
+            break;
+        default:
+            return false;
     }
-    finalInvites.sort((a, b) => b.uses - a.uses);
+
+    finalInvites.sort((a, b) => b[column] - a[column]);
     return finalInvites.slice(0, 10);
 }
