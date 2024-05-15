@@ -89,9 +89,8 @@ const Members = sequelize3.define('members', {
 module.exports = {
     name: Events.GuildMemberAdd,
     async execute(member) {
-        if (member.user.bot) return;
-
         const memberId = member.user.id;
+        if (member.user.bot) return console.log(memberId, ' joined via bot invite.');
 
         const existingMember = await Members.findOne({ where: { user_id: memberId } });
         if (existingMember) return console.log(memberId, ' joined the server again.');
@@ -115,7 +114,7 @@ module.exports = {
         }
 
         const increasedCode = findIncreasedUses(newInvitesMap, TotalInvitesMap);
-        if (!increasedCode) return;
+        if (!increasedCode) return console.log(memberId, ' joined the server through unknown means.');
 
         console.log(memberId, ' joined using ', increasedCode);
         await Members.create({ user_id: memberId, code: increasedCode });
