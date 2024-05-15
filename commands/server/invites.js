@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, userMention, codeBlock } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, userMention, codeBlock, MessageFlags } = require('discord.js');
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize({
@@ -74,7 +74,7 @@ module.exports = {
                 const user = userMention(invite.user_id);
                 message += `${user}: ${invite.total_uses}\n`;
             }
-            await interaction.editReply({ content: '## Invites Leaderboard\n' + message });
+            await interaction.editReply({ content: '## Invites Leaderboard\n' + message, flags: [MessageFlags.SuppressNotifications] });
         }
     },
 };
