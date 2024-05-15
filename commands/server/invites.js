@@ -64,12 +64,12 @@ module.exports = {
             });
             const topWeekly = getTop10Invites(invites, 'uses');
             const topAllTime = getTop10Invites(invites, 'total_uses');
-            let message = '## Top Weekly\n'
+            let message = '### Top Weekly\n'
             for (const invite of topWeekly) {
                 const user = userMention(invite.user_id);
                 message += `${user}: ${invite.uses}\n`;
             }
-            message += '\n\n## Top Alltime\n';
+            message += '\n\n### Top Alltime\n';
             for (const invite of top) {
                 const user = userMention(invite.user_id);
                 message += `${user}: ${invite.total_uses}\n`;
