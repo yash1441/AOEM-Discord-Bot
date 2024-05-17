@@ -95,7 +95,7 @@ module.exports = {
         const existingMember = await Members.findOne({ where: { user_id: memberId } });
         if (existingMember) return console.log(memberId, ' joined the server again.');
 
-        const newInvitesData = await member.guild.invites.fetch({ force: true });
+        const newInvitesData = await member.guild.invites.fetch({ force: true }).catch(console.error);
         const newInvitesMap = {};
         for (const [code, invite] of newInvitesData) {
             const { inviterId, uses } = invite;
