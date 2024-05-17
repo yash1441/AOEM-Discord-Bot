@@ -114,7 +114,10 @@ module.exports = {
         }
 
         const increasedCode = findIncreasedUses(newInvitesMap, TotalInvitesMap);
-        if (!increasedCode) return console.log(memberId, ' joined the server through unknown means.');
+        if (!increasedCode) {
+            console.log({ newInvitesMap, TotalInvitesMap });
+            return console.log(memberId, ' joined the server through unknown means.');
+        }
 
         console.log(memberId, ' joined using ', increasedCode);
         await Members.create({ user_id: memberId, code: increasedCode });
