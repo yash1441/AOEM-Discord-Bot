@@ -95,19 +95,7 @@ module.exports = {
         const existingMember = await Members.findOne({ where: { user_id: memberId } });
         if (existingMember) return console.log(memberId, ' joined the server again.');
 
-        const guild = await member.guild;
-		const invites = await guild.invites.fetch({ force: true }).catch(console.error);
-		for (const [code, invite] of invites) {
-			const [existingInvite, created] = await TotalInvites.findOrCreate({
-				where: { code: code},
-				defaults: { code: code, user_id: invite.inviterId, uses: invite.uses, guild_id: process.env.GUILD_ID },
-			});
-			if (created) continue ;
-			if (existingInvite.uses == invite.uses) continue;
-			existingInvite.update({ uses: invite.uses });
-		}
-
-        const newInvitesData = await guild.invites.fetch({ force: true }).catch(console.error);
+        const newInvitesData = await member.guild.invites.fetch({ cache: false }).catch(console.error);
         const newInvitesMap = {};
         for (const [code, invite] of newInvitesData) {
             const { inviterId, uses } = invite;
