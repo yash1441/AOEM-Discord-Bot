@@ -46,7 +46,7 @@ module.exports = {
 		});
 
 		const guild = await client.guilds.fetch(process.env.GUILD_ID);
-		const invites = await guild.invites.fetch();
+		const invites = await guild.invites.fetch({ force: true });
 		for (const [code, invite] of invites) {
 			const [existingInvite, created] = await TotalInvites.findOrCreate({
 				where: { code: code},
