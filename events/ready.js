@@ -44,17 +44,5 @@ module.exports = {
 			],
 			status: 'online'
 		});
-
-		const guild = await client.guilds.fetch(process.env.GUILD_ID);
-		const invites = await guild.invites.fetch({ force: true }).catch(console.error);
-		for (const [code, invite] of invites) {
-			const [existingInvite, created] = await TotalInvites.findOrCreate({
-				where: { code: code},
-				defaults: { code: code, user_id: invite.inviterId, uses: invite.uses, guild_id: process.env.GUILD_ID },
-			});
-			if (created) continue ;
-			if (existingInvite.uses == invite.uses) continue;
-			existingInvite.update({ uses: invite.uses });
-		}
 	},
 };
