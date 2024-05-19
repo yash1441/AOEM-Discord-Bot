@@ -36,38 +36,11 @@ const Invites = sequelize1.define('invites', {
 
 const sequelize2 = new Sequelize({
     dialect: 'sqlite',
-    storage: 'db/total_invites.sqlite',
-    logging: false,
-});
-
-const TotalInvites = sequelize2.define('total_invites', {
-    code: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    user_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-    uses: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-    },
-    guild_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: process.env.GUILD_ID,
-    },
-});
-
-const sequelize3 = new Sequelize({
-    dialect: 'sqlite',
     storage: 'db/members.sqlite',
     logging: false,
 });
 
-const Members = sequelize3.define('members', {
+const Members = sequelize2.define('members', {
     user_id: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -113,7 +86,6 @@ module.exports = {
                         .setRequired(true)
                         .addChoices(
                             { name: 'invites', value: 'invites' },
-                            { name: 'total_invites', value: 'total_invites' },
                             { name: 'members', value: 'members' },
                         )
                 )
@@ -154,9 +126,6 @@ module.exports = {
 
             if (db == 'invites') {
                 const response = await Invites.sequelize.query(query);
-                return await interaction.reply({ content: codeBlock(JSON.stringify(response)), ephemeral: true });
-            } else if (db == 'total_invites') {
-                const response = await TotalInvites.sequelize.query(query);
                 return await interaction.reply({ content: codeBlock(JSON.stringify(response)), ephemeral: true });
             } else if (db == 'members') {
                 const response = await Members.sequelize.query(query);

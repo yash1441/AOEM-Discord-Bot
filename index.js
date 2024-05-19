@@ -27,6 +27,7 @@ client.commands = new Collection();
 client.buttons = new Collection();
 // client.selectmenus = new Collection();
 client.cooldowns = new Collection();
+client.invites = new Collection();
 
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
