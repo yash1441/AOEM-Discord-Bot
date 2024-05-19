@@ -38,6 +38,14 @@ const Invites = sequelize.define('invites', {
 module.exports = {
     name: Events.InviteCreate,
     async execute(invite) {
+        const invitesData = await invite.guild.invites.fetch().catch(console.error);
+		const invites = new Array();
+		for (const [code, invite] of invitesData) {
+			invites.push({ code: code, uses: invite.uses, inviter: invite.inviter });
+		}
+
+		await client.invites.set(process.env.GUILD_ID, invites); 
+
         const code = invite.code;
         const inviterId = invite.inviterId;
 
