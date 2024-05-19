@@ -77,7 +77,6 @@ module.exports = {
 
         const totalInvites = await member.client.invites.get(process.env.GUILD_ID);
         const usedInvite = newInvitesData.find(inv => totalInvites.find(i => i.code === inv.code).uses < inv.uses) || null;
-        console.log(usedInvite);
 
         if (!usedInvite) {
             console.log(totalInvites);
