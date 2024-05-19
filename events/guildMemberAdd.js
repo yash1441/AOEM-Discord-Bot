@@ -80,7 +80,7 @@ module.exports = {
         console.log(usedInvite);
 
         if (!usedInvite) {
-            console.log({ newInvitesMap, totalInvites });
+            console.log(totalInvites);
             return console.log(memberId, ' joined the server through unknown means.');
         }
 
