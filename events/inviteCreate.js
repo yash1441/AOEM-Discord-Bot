@@ -44,7 +44,7 @@ module.exports = {
 			invites.push({ code: code, uses: invite.uses, inviter: invite.inviter });
 		}
 
-		await client.invites.set(process.env.GUILD_ID, invites); 
+		await invite.client.invites.set(process.env.GUILD_ID, invites); 
 
         const code = invite.code;
         const inviterId = invite.inviterId;
