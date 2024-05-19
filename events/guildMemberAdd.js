@@ -4,38 +4,11 @@ require('dotenv').config();
 
 const sequelize1 = new Sequelize({
     dialect: 'sqlite',
-    storage: 'db/total_invites.sqlite',
-    logging: false,
-});
-
-const TotalInvites = sequelize1.define('total_invites', {
-    code: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    user_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-    uses: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-    },
-    guild_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: process.env.GUILD_ID,
-    },
-});
-
-const sequelize2 = new Sequelize({
-    dialect: 'sqlite',
     storage: 'db/invites.sqlite',
     logging: false,
 });
 
-const Invites = sequelize2.define('invites', {
+const Invites = sequelize1.define('invites', {
     code: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -62,13 +35,13 @@ const Invites = sequelize2.define('invites', {
     },
 });
 
-const sequelize3 = new Sequelize({
+const sequelize2 = new Sequelize({
     dialect: 'sqlite',
     storage: 'db/members.sqlite',
     logging: false,
 });
 
-const Members = sequelize3.define('members', {
+const Members = sequelize2.define('members', {
     user_id: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -102,40 +75,23 @@ module.exports = {
             newInvitesMap[code] = { user_id: inviterId, uses };
         }
 
-        const TotalInvitesData = await TotalInvites.findAll({
-            where: { guild_id: process.env.GUILD_ID },
-            attributes: ['code', 'user_id', 'uses'],
-        });
+        const totalInvites = await member.client.invites.get(process.env.GUILD_ID);
+        const usedInvite = newInvitesData.find(inv => totalInvites.find(i => i.code === inv.code).uses < inv.uses) || null;
+        console.log(usedInvite);
 
-        const TotalInvitesMap = {};
-        for (const invite of TotalInvitesData) {
-            const { code, user_id, uses } = invite;
-            TotalInvitesMap[code] = { user_id, uses };
-        }
-
-        const increasedCode = findIncreasedUses(newInvitesMap, TotalInvitesMap);
-        if (!increasedCode) {
-            console.log({ newInvitesMap, TotalInvitesMap });
+        if (!usedInvite) {
+            console.log({ newInvitesMap, totalInvites });
             return console.log(memberId, ' joined the server through unknown means.');
         }
 
-        console.log(memberId, ' joined using ', increasedCode);
-        await Members.create({ user_id: memberId, code: increasedCode });
-        await TotalInvites.update({ uses: newInvitesMap[increasedCode].uses }, { where: { code: increasedCode } });
-        await Invites.increment({ 'uses': 1, 'total_uses': 1 }, { where: { code: increasedCode } });
-    }
-};
+        console.log(memberId, ' joined using ', usedInvite.code);
+        await Members.create({ user_id: memberId, code: usedInvite.code });
+        await Invites.increment({ 'uses': 1, 'total_uses': 1 }, { where: { code: usedInvite.code } });
 
-function findIncreasedUses(newInvitesMap, TotalInvitesMap) {
-    let changedCode = false
-    for (const code in newInvitesMap) {
-        const newUses = newInvitesMap[code].uses;
-        const oldUses = TotalInvitesMap[code]?.uses;
-        if (!oldUses) continue;
-        if (newUses > oldUses) {
-            changedCode = code;
-            return changedCode;
-        }
+        const currentInvites = new Array();
+		for (const [code, invite] of newInvitesData) {
+			currentInvites.push({ code: code, uses: invite.uses, inviter: invite.inviter });
+		}
+		await member.client.invites.set(process.env.GUILD_ID, currentInvites); 
     }
-    return changedCode;
 };

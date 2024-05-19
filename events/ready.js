@@ -1,33 +1,5 @@
 const { Events, ActivityType } = require('discord.js');
-const Sequelize = require('sequelize');
 require('dotenv').config();
-
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'db/total_invites.sqlite',
-    logging: false,
-});
-
-const TotalInvites = sequelize.define('total_invites', {
-    code: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    user_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-    uses: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-    },
-    guild_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: process.env.GUILD_ID,
-    },
-});
 
 module.exports = {
 	name: Events.ClientReady,
@@ -46,15 +18,12 @@ module.exports = {
 		});
 
 		const guild = await client.guilds.fetch(process.env.GUILD_ID);
-		const invites = await guild.invites.fetch({ cache: false }).catch(console.error);
-		for (const [code, invite] of invites) {
-			const [existingInvite, created] = await TotalInvites.findOrCreate({
-				where: { code: code},
-				defaults: { code: code, user_id: invite.inviterId, uses: invite.uses, guild_id: process.env.GUILD_ID },
-			});
-			if (created) continue ;
-			if (existingInvite.uses == invite.uses) continue;
-			existingInvite.update({ uses: invite.uses });
+		const invitesData = await guild.invites.fetch({ cache: false }).catch(console.error);
+		const invites = new Array();
+		for (const [code, invite] of invitesData) {
+			invites.push({ code: code, uses: invite.uses, inviter: invite.inviter });
 		}
+
+		await client.invites.set(process.env.GUILD_ID, invites); 
 	},
 };
