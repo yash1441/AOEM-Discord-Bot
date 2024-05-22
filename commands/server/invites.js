@@ -111,7 +111,8 @@ module.exports = {
 
             const weeklyEmbed = new EmbedBuilder()
                 .setTitle('Top Weekly')
-                .setColor('#2B2D31');
+                .setColor('#2B2D31')
+                .setImage('https://i.ibb.co/hy1xLYT/Top-Weekly.png');
 
             for (const invite of topWeekly) {
                 const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
@@ -120,7 +121,8 @@ module.exports = {
 
             const allTimeEmbed = new EmbedBuilder()
                 .setTitle('Top Alltime')
-                .setColor('#2B2D31');
+                .setColor('#2B2D31')
+                .setImage('https://i.ibb.co/HzQHzSS/Top-Alltime.png');
 
             for (const invite of topAllTime) {
                 const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
