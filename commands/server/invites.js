@@ -114,8 +114,8 @@ module.exports = {
                 .setColor('#2B2D31');
 
             for (const invite of topWeekly) {
-                const user = await interaction.guild.members.cache.get(invite.user_id).user;
-                weeklyEmbed.addFields({ name: user.username, value: invite.uses?.toString() ?? '-', inline: false });
+                const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
+                weeklyEmbed.addFields({ name: username, value: invite.uses?.toString() ?? '0', inline: false });
             }
 
             const allTimeEmbed = new EmbedBuilder()
@@ -123,8 +123,8 @@ module.exports = {
                 .setColor('#2B2D31');
 
             for (const invite of topAllTime) {
-                const user = await interaction.guild.members.cache.get(invite.user_id).user;
-                allTimeEmbed.addFields({ name: user.username, value: invite.uses?.toString() ?? '-', inline: false });
+                const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
+                allTimeEmbed.addFields({ name: username, value: invite.uses?.toString() ?? '0', inline: false });
             }
             await interaction.editReply({ content: '## Invites Leaderboard', embeds: [weeklyEmbed, allTimeEmbed], flags: [MessageFlags.SuppressNotifications] });
         } else if (subCommand === 'raw-query') {
