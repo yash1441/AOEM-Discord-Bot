@@ -118,7 +118,7 @@ module.exports = {
 
             for (const invite of topWeekly) {
                 const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
-                bufferText += (++index).toString() + '. ' + invite.uses.toString() + '\t' + username + '\n';
+                bufferText += (++index).toString() + '.\t' + invite.uses.toString() + '\t' + username + '\n';
                 weeklyEmbed.setDescription(codeBlock(bufferText));
             }
 
@@ -131,7 +131,7 @@ module.exports = {
 
             for (const invite of topAllTime) {
                 const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
-                bufferText += (++index).toString() + '. ' + invite.total_uses.toString() + '\t' + username + '\n';
+                bufferText += (++index).toString() + '.\t' + invite.total_uses.toString() + '\t' + username + '\n';
                 allTimeEmbed.setDescription(codeBlock(bufferText));
             }
             await interaction.editReply({ content: '## Invites Leaderboard', embeds: [weeklyEmbed, allTimeEmbed], flags: [MessageFlags.SuppressNotifications] });
