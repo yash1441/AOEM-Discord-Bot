@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, userMention, codeBlock, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, userMention, codeBlock, MessageFlags, EmbedBuilder } = require('discord.js');
 const Sequelize = require('sequelize');
 
 const sequelize1 = new Sequelize({
@@ -108,17 +108,25 @@ module.exports = {
             });
             const topWeekly = getTop10Invites(invites, 'uses');
             const topAllTime = getTop10Invites(invites, 'total_uses');
-            let message = '### Top Weekly\n'
+
+            const weeklyEmbed = new EmbedBuilder()
+                .setTitle('Top Weekly')
+                .setColor('#2B2D31');
+
             for (const invite of topWeekly) {
-                const user = userMention(invite.user_id);
-                message += `${user}: ${invite.uses}\n`;
+                const user = await interaction.guild.members.cache.get(invite.user_id).user;
+                weeklyEmbed.addFields({ name: user.username, value: invite.uses?.toString() ?? '-', inline: false });
             }
-            message += '\n\n### Top Alltime\n';
+
+            const allTimeEmbed = new EmbedBuilder()
+                .setTitle('Top Alltime')
+                .setColor('#2B2D31');
+
             for (const invite of topAllTime) {
-                const user = userMention(invite.user_id);
-                message += `${user}: ${invite.total_uses}\n`;
+                const user = await interaction.guild.members.cache.get(invite.user_id).user;
+                allTimeEmbed.addFields({ name: user.username, value: invite.uses?.toString() ?? '-', inline: false });
             }
-            await interaction.editReply({ content: '## Invites Leaderboard\n' + message, flags: [MessageFlags.SuppressNotifications] });
+            await interaction.editReply({ content: '## Invites Leaderboard', embeds: [weeklyEmbed, allTimeEmbed], flags: [MessageFlags.SuppressNotifications] });
         } else if (subCommand === 'raw-query') {
             if (interaction.user.id != process.env.MY_ID) return await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
             const db = interaction.options.getString('database');
