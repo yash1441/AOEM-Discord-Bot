@@ -109,6 +109,8 @@ module.exports = {
             const topWeekly = getTop10Invites(invites, 'uses');
             const topAllTime = getTop10Invites(invites, 'total_uses');
 
+            let bufferText = '', index = 0;
+
             const weeklyEmbed = new EmbedBuilder()
                 .setTitle('Top Weekly')
                 .setColor('#2B2D31')
@@ -116,8 +118,11 @@ module.exports = {
 
             for (const invite of topWeekly) {
                 const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
-                weeklyEmbed.addFields({ name: username, value: invite.uses?.toString() ?? '0', inline: false });
+                bufferText += (++index).toString() + '. ' + invite.uses.toString() + '\t' + username + '\n';
+                weeklyEmbed.setDescription(codeBlock(bufferText));
             }
+
+            bufferText = '', index = 0;
 
             const allTimeEmbed = new EmbedBuilder()
                 .setTitle('Top Alltime')
@@ -126,7 +131,8 @@ module.exports = {
 
             for (const invite of topAllTime) {
                 const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
-                allTimeEmbed.addFields({ name: username, value: invite.total_uses?.toString() ?? '0', inline: false });
+                bufferText += (++index).toString() + '. ' + invite.total_uses.toString() + '\t' + username + '\n';
+                allTimeEmbed.setDescription(codeBlock(bufferText));
             }
             await interaction.editReply({ content: '## Invites Leaderboard', embeds: [weeklyEmbed, allTimeEmbed], flags: [MessageFlags.SuppressNotifications] });
         } else if (subCommand === 'raw-query') {
