@@ -79,7 +79,6 @@ module.exports = {
         const usedInvite = newInvitesData.find(inv => totalInvites.find(i => i.code === inv.code).uses < inv.uses) || null;
 
         if (!usedInvite) {
-            console.log(totalInvites);
             return console.log(memberId, ' joined the server through unknown means.');
         }
 
