@@ -109,7 +109,7 @@ module.exports = {
             const topWeekly = getTop10Invites(invites, 'uses');
             const topAllTime = getTop10Invites(invites, 'total_uses');
 
-            let bufferText = '', index = 0;
+            let bufferText = '#\tUses\tUsername', index = 0;
 
             const weeklyEmbed = new EmbedBuilder()
                 .setTitle('Top Weekly')
@@ -122,7 +122,7 @@ module.exports = {
                 weeklyEmbed.setDescription(codeBlock(bufferText));
             }
 
-            bufferText = '', index = 0;
+            bufferText = '#\tUses\tUsername', index = 0;
 
             const allTimeEmbed = new EmbedBuilder()
                 .setTitle('Top Alltime')
