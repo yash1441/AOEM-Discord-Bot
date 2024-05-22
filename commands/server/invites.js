@@ -124,7 +124,7 @@ module.exports = {
 
             for (const invite of topAllTime) {
                 const username = await interaction.guild.members.cache.get(invite.user_id)?.user?.username ?? invite.user_id;
-                allTimeEmbed.addFields({ name: username, value: invite.uses?.toString() ?? '0', inline: false });
+                allTimeEmbed.addFields({ name: username, value: invite.total_uses?.toString() ?? '0', inline: false });
             }
             await interaction.editReply({ content: '## Invites Leaderboard', embeds: [weeklyEmbed, allTimeEmbed], flags: [MessageFlags.SuppressNotifications] });
         } else if (subCommand === 'raw-query') {
