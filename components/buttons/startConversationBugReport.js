@@ -53,7 +53,7 @@ module.exports = {
 
         await thread.awaitMessages({
             filter: collectorFilter,
-            time: 4_20_000,
+            time: 6_00_000,
             max: 1,
             errors: ['time']
         }).then(messages => {
