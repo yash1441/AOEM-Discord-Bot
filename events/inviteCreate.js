@@ -38,6 +38,7 @@ const Invites = sequelize.define('invites', {
 module.exports = {
     name: Events.InviteCreate,
     async execute(invite) {
+        if (!invite.inviterId) return console.log(invite.code, ' created without an inviterId.');
         const invitesData = await invite.guild.invites.fetch().catch(console.error);
 		const invites = new Array();
 		for (const [code, invite] of invitesData) {
