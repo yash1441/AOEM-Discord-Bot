@@ -65,6 +65,7 @@ module.exports = {
         .setName('invites')
         .setDescription('Invites related commands')
         .setDMPermission(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(subcommand =>
             subcommand
                 .setName('leaderboard')
