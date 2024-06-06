@@ -59,13 +59,12 @@ const Members = sequelize2.define('members', {
 });
 
 module.exports = {
-    cooldown: 1,
+    cooldown: 60,
     category: 'server',
     data: new SlashCommandBuilder()
         .setName('invites')
         .setDescription('Invites related commands')
         .setDMPermission(false)
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(subcommand =>
             subcommand
                 .setName('leaderboard')
