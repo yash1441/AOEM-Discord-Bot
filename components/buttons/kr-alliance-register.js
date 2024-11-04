@@ -4,12 +4,12 @@ require('dotenv').config();
 module.exports = {
     cooldown: 10,
     data: {
-        name: 'cn-alliance-register',
+        name: 'kr-alliance-register',
     },
     async execute(interaction) {
         const modal = new ModalBuilder()
-            .setCustomId('cn-alliance-register-modal')
-            .setTitle('CN Alliance Registration');
+            .setCustomId('kr-alliance-register-modal')
+            .setTitle('KR Alliance Registration');
 
         const server = new TextInputBuilder()
             .setCustomId('server')
