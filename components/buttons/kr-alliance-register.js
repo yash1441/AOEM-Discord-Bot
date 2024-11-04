@@ -65,7 +65,7 @@ module.exports = {
 
 				Sheets.appendRow(
 					process.env.ALLIANCE_SHEET,
-					"Suggestion!A2:Z",
+					"KR!A2:Z",
 					[
 						[
 							interaction.user.id,
