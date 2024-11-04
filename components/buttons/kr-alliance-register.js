@@ -4,6 +4,8 @@ const {
 	TextInputBuilder,
 	TextInputStyle,
 } = require("discord.js");
+const date = require("date-and-time");
+const Sheets = require("../../utils/sheets");
 require("dotenv").config();
 
 module.exports = {
@@ -58,6 +60,23 @@ module.exports = {
 					content: `Server: ${server}\nAlliance Name: ${allianceName}\nComment: ${comment}`,
 					ephemeral: true,
 				});
+
+				const now = new Date();
+
+				Sheets.appendRow(
+					process.env.ALLIANCE_SHEET,
+					"Suggestion!A2:Z",
+					[
+						[
+							interaction.user.id,
+							interaction.user.username,
+							server,
+							allianceName,
+							comment,
+							date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
+						],
+					]
+				);
 			})
 			.catch(console.error);
 	},
