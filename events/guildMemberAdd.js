@@ -63,10 +63,12 @@ module.exports = {
     name: Events.GuildMemberAdd,
     async execute(member) {
         const memberId = member.user.id;
-        if (member.user.bot) return console.log(memberId, ' joined via bot invite.');
+        const logChannel = client.channels.cache.get(process.env.USER_LOG_CHANNEL);
+        
+        if (member.user.bot) return logChannel.send(memberId + ' joined via bot invite.');
 
         const existingMember = await Members.findOne({ where: { user_id: memberId } });
-        if (existingMember) return console.log(memberId, ' joined the server again.');
+        if (existingMember) return logChannel.send(memberId + ' joined the server again.');
 
         const newInvitesData = await member.guild.invites.fetch({ cache: false }).catch(console.error);
         const newInvitesMap = {};
@@ -79,10 +81,10 @@ module.exports = {
         const usedInvite = newInvitesData.find(inv => totalInvites.find(i => i.code === inv.code).uses < inv.uses) || null;
 
         if (!usedInvite) {
-            return console.log(memberId, ' joined the server through unknown means.');
+            return logChannel.send(memberId + ' joined the server through unknown means.');
         }
 
-        console.log(memberId, ' joined using ', usedInvite.code);
+        logChannel.send(memberId + ' joined using ', usedInvite.code);
         await Members.create({ user_id: memberId, code: usedInvite.code });
         await Invites.increment({ 'uses': 1, 'total_uses': 1 }, { where: { code: usedInvite.code } });
 

@@ -32,6 +32,8 @@ module.exports = {
         if (member.user.bot) return;
         
         const memberId = member.user.id;
+        const logChannel = client.channels.cache.get(process.env.USER_LOG_CHANNEL);
+        
         const [memberData, created] = await Members.findOrCreate({
             where: { user_id: memberId },
             defaults: {
@@ -39,6 +41,6 @@ module.exports = {
             },
         });
 
-        console.log(memberData.user_id, ' left the server. They used code ', memberData.code, ' to join.');
+        logChannel.send(memberData.user_id + ' left the server. They used code ' + memberData.code + ' to join.');
     }
 };

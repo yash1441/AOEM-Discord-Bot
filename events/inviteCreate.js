@@ -38,7 +38,8 @@ const Invites = sequelize.define('invites', {
 module.exports = {
     name: Events.InviteCreate,
     async execute(invite) {
-        if (!invite.inviterId) return console.log(invite.code, ' created without an inviterId.');
+        const logChannel = client.channels.cache.get(process.env.USER_LOG_CHANNEL);
+        if (!invite.inviterId) return logChannel.send(invite.code + ' created without an inviterId.');
         const invitesData = await invite.guild.invites.fetch().catch(console.error);
 		const invites = new Array();
 		for (const [code, invite] of invitesData) {
@@ -55,6 +56,6 @@ module.exports = {
             user_id: inviterId,
         });
 
-        console.log(inviteData.code, ' created by ', inviteData.user_id, ' defaulted to ', inviteData.uses, ' uses.');
+        logChannel.send(inviteData.code + ' created by ' + inviteData.user_id + ' defaulted to ' + inviteData.uses + ' uses.');
     }
 };
