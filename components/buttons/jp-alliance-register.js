@@ -11,7 +11,6 @@ const sequelize = new Sequelize({
 	dialect: "sqlite",
 	storage: "db/alliance.sqlite",
 	logging: console.log,
-	timezone: "+08:00",
 });
 
 const Alliance = sequelize.define("jp_alliance", {
