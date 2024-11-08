@@ -28,11 +28,11 @@ const Members = sequelize.define('members', {
 
 module.exports = {
     name: Events.GuildMemberRemove,
-    async execute(member, client) {
+    async execute(member) {
         if (member.user.bot) return;
         
         const memberId = member.user.id;
-        const logChannel = client.channels.cache.get(process.env.USER_LOG_CHANNEL);
+        const logChannel = member.client.channels.cache.get(process.env.USER_LOG_CHANNEL);
         
         const [memberData, created] = await Members.findOrCreate({
             where: { user_id: memberId },

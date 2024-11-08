@@ -37,8 +37,8 @@ const Invites = sequelize.define('invites', {
 
 module.exports = {
     name: Events.InviteCreate,
-    async execute(invite, client) {
-        const logChannel = client.channels.cache.get(process.env.USER_LOG_CHANNEL);
+    async execute(invite) {
+        const logChannel = invite.client.channels.cache.get(process.env.USER_LOG_CHANNEL);
         if (!invite.inviterId) return logChannel.send(invite.code + ' created without an inviterId.');
         const invitesData = await invite.guild.invites.fetch().catch(console.error);
 		const invites = new Array();

@@ -61,9 +61,9 @@ const Members = sequelize2.define('members', {
 
 module.exports = {
     name: Events.GuildMemberAdd,
-    async execute(member, client) {
+    async execute(member) {
         const memberId = member.user.id;
-        const logChannel = client.channels.cache.get(process.env.USER_LOG_CHANNEL);
+        const logChannel = member.client.channels.cache.get(process.env.USER_LOG_CHANNEL);
         
         if (member.user.bot) return logChannel.send(memberId + ' joined via bot invite.');
 
