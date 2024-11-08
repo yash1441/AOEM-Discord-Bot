@@ -3,6 +3,7 @@ const {
 	ActionRowBuilder,
 	TextInputBuilder,
 	TextInputStyle,
+	bold,
 } = require("discord.js");
 const Sequelize = require("sequelize");
 require("dotenv").config();
@@ -87,19 +88,53 @@ module.exports = {
 				const comment =
 					modalInteraction.fields.getTextInputValue("comment");
 
-				modalInteraction.reply({
-					content: `Server: ${server}\nAlliance Name: ${allianceName}\nComment: ${comment}`,
-					ephemeral: true,
-				});
-
-				Alliance.create({
-					user_id: interaction.user.id,
-					user_name: interaction.user.username,
-					server: server,
-					alliance_name: allianceName,
-					comment: comment,
-				});
+				findOrCreateAlliance(
+					interaction.user.id,
+					interaction.user.username,
+					server,
+					allianceName,
+					comment,
+					modalInteraction
+				);
 			})
 			.catch(console.error);
 	},
 };
+
+async function findOrCreateAlliance(
+	user_id,
+	user_name,
+	server,
+	alliance_name,
+	comment,
+	modalInteraction
+) {
+	const [alliance, created] = await Alliance.findOrCreate({
+		where: { user_id: user_id },
+		defaults: {
+			user_id: user_id,
+			user_name: user_name,
+			server: server,
+			alliance_name: alliance_name,
+			comment: comment,
+		},
+	});
+
+	if (created) {
+		modalInteraction.reply({
+			content:
+				bold("サーバー") +
+				`: ${server}\n` +
+				bold("同盟名") +
+				`: ${alliance_name}\n` +
+				bold("コメント") +
+				`: ${comment}`,
+			ephemeral: true,
+		});
+	} else {
+		modalInteraction.reply({
+			content: `You have already registered an alliance this month.`,
+			ephemeral: true,
+		});
+	}
+}
