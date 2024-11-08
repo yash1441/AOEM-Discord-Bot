@@ -4,7 +4,6 @@ const {
 	TextInputBuilder,
 	TextInputStyle,
 } = require("discord.js");
-const date = require("date-and-time");
 const Sequelize = require('sequelize');
 require("dotenv").config();
 
@@ -92,8 +91,6 @@ module.exports = {
 					content: `Server: ${server}\nAlliance Name: ${allianceName}\nComment: ${comment}`,
 					ephemeral: true,
 				});
-
-				const now = new Date();
 
 				Alliance.create({
 					user_id: interaction.user.id,
