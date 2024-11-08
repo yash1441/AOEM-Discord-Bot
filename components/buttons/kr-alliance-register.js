@@ -4,9 +4,39 @@ const {
 	TextInputBuilder,
 	TextInputStyle,
 } = require("discord.js");
-const date = require("date-and-time");
-const Sheets = require("../../utils/sheets");
+const Sequelize = require("sequelize");
 require("dotenv").config();
+
+const sequelize = new Sequelize({
+	dialect: "sqlite",
+	storage: "db/alliance.sqlite",
+	logging: console.log,
+	timezone: "+08:00",
+});
+
+const Alliance = sequelize.define("kr_alliance", {
+	user_id: {
+		type: Sequelize.STRING,
+		allowNull: false,
+		unique: true,
+	},
+	user_name: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	server: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	alliance_name: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	comment: {
+		type: Sequelize.TEXT,
+		allowNull: true,
+	},
+});
 
 module.exports = {
 	cooldown: 10,
@@ -14,6 +44,8 @@ module.exports = {
 		name: "kr-alliance-register",
 	},
 	async execute(interaction) {
+		Alliance.sync(); // DELETE AFTER ONE GO
+
 		const modal = new ModalBuilder()
 			.setCustomId("kr-alliance-register-modal")
 			.setTitle("KR Alliance Registration");
@@ -61,22 +93,13 @@ module.exports = {
 					ephemeral: true,
 				});
 
-				const now = new Date();
-
-				Sheets.appendRow(
-					process.env.ALLIANCE_SHEET,
-					"KR!A2:Z",
-					[
-						[
-							interaction.user.id,
-							interaction.user.username,
-							server,
-							allianceName,
-							comment,
-							date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
-						],
-					]
-				);
+				Alliance.create({
+					user_id: interaction.user.id,
+					user_name: interaction.user.username,
+					server: server,
+					alliance_name: allianceName,
+					comment: comment,
+				});
 			})
 			.catch(console.error);
 	},
