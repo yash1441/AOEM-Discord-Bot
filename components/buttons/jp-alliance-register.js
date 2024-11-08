@@ -4,33 +4,34 @@ const {
 	TextInputBuilder,
 	TextInputStyle,
 } = require("discord.js");
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 require("dotenv").config();
 
 const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'db/alliance.sqlite',
-    logging: console.log,
+	dialect: "sqlite",
+	storage: "db/alliance.sqlite",
+	logging: console.log,
+	timezone: "+08:00",
 });
 
-const Alliance = sequelize.define('jp_alliance', {
-    user_id: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    user_name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-    server: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-    alliance_name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
+const Alliance = sequelize.define("jp_alliance", {
+	user_id: {
+		type: Sequelize.STRING,
+		allowNull: false,
+		unique: true,
+	},
+	user_name: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	server: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	alliance_name: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
 	comment: {
 		type: Sequelize.TEXT,
 		allowNull: true,
