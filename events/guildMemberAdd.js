@@ -61,7 +61,7 @@ const Members = sequelize2.define('members', {
 
 module.exports = {
     name: Events.GuildMemberAdd,
-    async execute(member) {
+    async execute(member, client) {
         const memberId = member.user.id;
         const logChannel = client.channels.cache.get(process.env.USER_LOG_CHANNEL);
         

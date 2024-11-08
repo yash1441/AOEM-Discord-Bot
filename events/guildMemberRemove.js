@@ -28,7 +28,7 @@ const Members = sequelize.define('members', {
 
 module.exports = {
     name: Events.GuildMemberRemove,
-    async execute(member) {
+    async execute(member, client) {
         if (member.user.bot) return;
         
         const memberId = member.user.id;

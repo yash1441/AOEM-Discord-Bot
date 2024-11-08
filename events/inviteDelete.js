@@ -3,7 +3,7 @@ require('dotenv').config();
 
 module.exports = {
     name: Events.InviteDelete,
-    async execute(invite) {
+    async execute(invite, client) {
         const logChannel = client.channels.cache.get(process.env.USER_LOG_CHANNEL);
         logChannel.send(invite.code + ' has been deleted.');
     }
