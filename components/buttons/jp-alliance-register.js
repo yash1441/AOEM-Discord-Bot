@@ -41,7 +41,7 @@ const Alliance = sequelize.define("jp_alliance", {
 		allowNull: false,
 		defaultValue: Sequelize.NOW, // This ensures a timestamp is set upon creation
 	},
-});
+}, { timestamps: false});
 
 module.exports = {
 	cooldown: 10,

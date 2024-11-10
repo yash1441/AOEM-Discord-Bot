@@ -14,34 +14,38 @@ const sequelize = new Sequelize({
 	logging: console.log,
 });
 
-const Alliance = sequelize.define("kr_alliance", {
-	user_id: {
-		type: Sequelize.STRING,
-		allowNull: false,
-		unique: false,
+const Alliance = sequelize.define(
+	"kr_alliance",
+	{
+		user_id: {
+			type: Sequelize.STRING,
+			allowNull: false,
+			unique: false,
+		},
+		user_name: {
+			type: Sequelize.STRING,
+			allowNull: false,
+		},
+		server: {
+			type: Sequelize.STRING,
+			allowNull: false,
+		},
+		alliance_name: {
+			type: Sequelize.STRING,
+			allowNull: false,
+		},
+		comment: {
+			type: Sequelize.TEXT,
+			allowNull: true,
+		},
+		createdAt: {
+			type: Sequelize.DATE,
+			allowNull: false,
+			defaultValue: Sequelize.NOW, // This ensures a timestamp is set upon creation
+		},
 	},
-	user_name: {
-		type: Sequelize.STRING,
-		allowNull: false,
-	},
-	server: {
-		type: Sequelize.STRING,
-		allowNull: false,
-	},
-	alliance_name: {
-		type: Sequelize.STRING,
-		allowNull: false,
-	},
-	comment: {
-		type: Sequelize.TEXT,
-		allowNull: true,
-	},
-	createdAt: {
-		type: Sequelize.DATE,
-		allowNull: false,
-		defaultValue: Sequelize.NOW, // This ensures a timestamp is set upon creation
-	},
-});
+	{ timestamps: false }
+);
 
 module.exports = {
 	cooldown: 10,
@@ -49,7 +53,7 @@ module.exports = {
 		name: "kr-alliance-register",
 	},
 	async execute(interaction) {
-		Alliance.sync({ force: true });
+		Alliance.sync({ alter: true });
 
 		const modal = new ModalBuilder()
 			.setCustomId("kr-alliance-register-modal")
