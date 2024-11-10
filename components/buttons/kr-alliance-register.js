@@ -36,6 +36,11 @@ const Alliance = sequelize.define("kr_alliance", {
 		type: Sequelize.TEXT,
 		allowNull: true,
 	},
+	createdAt: {
+		type: Sequelize.DATE,
+		allowNull: false,
+		defaultValue: Sequelize.NOW, // This ensures a timestamp is set upon creation
+	},
 });
 
 module.exports = {
@@ -44,7 +49,7 @@ module.exports = {
 		name: "kr-alliance-register",
 	},
 	async execute(interaction) {
-		// Alliance.sync();
+		Alliance.sync({ force: true });
 
 		const modal = new ModalBuilder()
 			.setCustomId("kr-alliance-register-modal")
@@ -129,7 +134,6 @@ async function findOrCreateAlliance(
 			server: server,
 			alliance_name: alliance_name,
 			comment: comment,
-			createdAt: new Date(),
 		},
 	});
 
