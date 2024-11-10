@@ -39,7 +39,7 @@ const Alliance = sequelize.define("jp_alliance", {
 	createdAt: {
 		type: Sequelize.DATEONLY,
 		allowNull: false,
-		defaultValue: Sequelize.fn('NOW'), // This ensures a timestamp is set upon creation
+		defaultValue: Sequelize.DataTypes.NOW, // This ensures a timestamp is set upon creation
 	},
 }, { timestamps: false});
 
