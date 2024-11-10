@@ -65,7 +65,9 @@ module.exports = {
 			},
 		});
 
-		console.log(records);
+        for (const record of records) {
+            console.log(record.dataValues);
+        }
 
 		await interaction.editReply({ content: "Test" });
 	},
