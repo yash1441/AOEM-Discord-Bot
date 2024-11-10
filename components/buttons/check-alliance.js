@@ -9,7 +9,7 @@ const sequelize = new Sequelize({
 });
 
 const Alliance = sequelize.define(
-	"jp_alliance",
+	"kr_alliance",
 	{
 		user_id: {
 			type: Sequelize.STRING,
@@ -67,6 +67,6 @@ module.exports = {
 
 		console.log(records);
 
-		await interaction.reply({ content: "Test" });
+		await interaction.editReply({ content: "Test" });
 	},
 };
