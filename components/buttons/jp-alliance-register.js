@@ -44,7 +44,7 @@ module.exports = {
 		name: "jp-alliance-register",
 	},
 	async execute(interaction) {
-		Alliance.sync(); // DELETE AFTER ONE GO
+		// Alliance.sync();
 
 		const modal = new ModalBuilder()
 			.setCustomId("jp-alliance-register-modal")
@@ -109,8 +109,20 @@ async function findOrCreateAlliance(
 	comment,
 	modalInteraction
 ) {
+	const currentMonthStart = new Date();
+	currentMonthStart.setDate(1);
+	currentMonthStart.setHours(0, 0, 0, 0);
+
+	const nextMonthStart = new Date(currentMonthStart);
+	nextMonthStart.setMonth(nextMonthStart.getMonth() + 1);
 	const [alliance, created] = await Alliance.findOrCreate({
-		where: { user_id: user_id },
+		where: {
+			user_id: user_id,
+			createdAt: {
+				[Sequelize.Op.gte]: currentMonthStart,
+				[Sequelize.Op.lt]: nextMonthStart,
+			},
+		},
 		defaults: {
 			user_id: user_id,
 			user_name: user_name,
