@@ -11,37 +11,41 @@ require("dotenv").config();
 const sequelize = new Sequelize({
 	dialect: "sqlite",
 	storage: "db/alliance.sqlite",
-	logging: console.log,
+	logging: true,
 });
 
-const Alliance = sequelize.define("jp_alliance", {
-	user_id: {
-		type: Sequelize.STRING,
-		allowNull: false,
-		unique: false,
+const Alliance = sequelize.define(
+	"jp_alliance",
+	{
+		user_id: {
+			type: Sequelize.STRING,
+			allowNull: false,
+			unique: false,
+		},
+		user_name: {
+			type: Sequelize.STRING,
+			allowNull: false,
+		},
+		server: {
+			type: Sequelize.STRING,
+			allowNull: false,
+		},
+		alliance_name: {
+			type: Sequelize.STRING,
+			allowNull: false,
+		},
+		comment: {
+			type: Sequelize.TEXT,
+			allowNull: true,
+		},
+		createdAt: {
+			type: Sequelize.DATEONLY,
+			allowNull: false,
+			defaultValue: Sequelize.DataTypes.NOW, // This ensures a timestamp is set upon creation
+		},
 	},
-	user_name: {
-		type: Sequelize.STRING,
-		allowNull: false,
-	},
-	server: {
-		type: Sequelize.STRING,
-		allowNull: false,
-	},
-	alliance_name: {
-		type: Sequelize.STRING,
-		allowNull: false,
-	},
-	comment: {
-		type: Sequelize.TEXT,
-		allowNull: true,
-	},
-	createdAt: {
-		type: Sequelize.DATEONLY,
-		allowNull: false,
-		defaultValue: Sequelize.DataTypes.NOW, // This ensures a timestamp is set upon creation
-	},
-}, { timestamps: false});
+	{ timestamps: false }
+);
 
 module.exports = {
 	cooldown: 10,
@@ -117,9 +121,9 @@ async function findOrCreateAlliance(
 	const currentMonthStart = new Date();
 	currentMonthStart.setDate(1);
 	currentMonthStart.setHours(0, 0, 0, 0);
-
 	const nextMonthStart = new Date(currentMonthStart);
 	nextMonthStart.setMonth(nextMonthStart.getMonth() + 1);
+
 	const [alliance, created] = await Alliance.findOrCreate({
 		where: {
 			user_id: user_id,
@@ -150,7 +154,14 @@ async function findOrCreateAlliance(
 		});
 	} else {
 		modalInteraction.reply({
-			content: `You have already registered an alliance this month.`,
+			content:
+				`You have already registered an alliance this month.\n` +
+				bold("Server") +
+				`: ${alliance.server}\n` +
+				bold("Alliance Name") +
+				`: ${alliance.alliance_name}\n` +
+				bold("Comment") +
+				`: ${alliance.comment}`,
 			ephemeral: true,
 		});
 	}
