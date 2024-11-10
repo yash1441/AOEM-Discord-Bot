@@ -41,7 +41,7 @@ const Alliance = sequelize.define(
 		createdAt: {
 			type: Sequelize.DATEONLY,
 			allowNull: false,
-			defaultValue: Sequelize.fn('now'), // This ensures a timestamp is set upon creation
+			defaultValue: Sequelize.fn('NOW'), // This ensures a timestamp is set upon creation
 		},
 	},
 	{ timestamps: false }
