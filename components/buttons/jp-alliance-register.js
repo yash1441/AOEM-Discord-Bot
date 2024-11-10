@@ -44,7 +44,7 @@ module.exports = {
 		name: "jp-alliance-register",
 	},
 	async execute(interaction) {
-		Alliance.sync();
+		// Alliance.sync();
 
 		const modal = new ModalBuilder()
 			.setCustomId("jp-alliance-register-modal")

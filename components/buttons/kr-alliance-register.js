@@ -44,7 +44,7 @@ module.exports = {
 		name: "kr-alliance-register",
 	},
 	async execute(interaction) {
-		Alliance.sync();
+		// Alliance.sync();
 
 		const modal = new ModalBuilder()
 			.setCustomId("kr-alliance-register-modal")
