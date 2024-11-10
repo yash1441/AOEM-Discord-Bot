@@ -156,11 +156,11 @@ async function findOrCreateAlliance(
 		modalInteraction.reply({
 			content:
 				`You have already registered an alliance this month.\n` +
-				bold("Server") +
+				bold("サーバー") +
 				`: ${alliance.server}\n` +
-				bold("Alliance Name") +
+				bold("同盟名") +
 				`: ${alliance.alliance_name}\n` +
-				bold("Comment") +
+				bold("コメント") +
 				`: ${alliance.comment}`,
 			ephemeral: true,
 		});
