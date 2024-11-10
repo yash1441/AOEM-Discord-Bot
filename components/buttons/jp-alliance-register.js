@@ -18,7 +18,7 @@ const Alliance = sequelize.define("jp_alliance", {
 	user_id: {
 		type: Sequelize.STRING,
 		allowNull: false,
-		unique: true,
+		unique: false,
 	},
 	user_name: {
 		type: Sequelize.STRING,
@@ -44,7 +44,7 @@ module.exports = {
 		name: "jp-alliance-register",
 	},
 	async execute(interaction) {
-		// Alliance.sync();
+		Alliance.sync();
 
 		const modal = new ModalBuilder()
 			.setCustomId("jp-alliance-register-modal")
