@@ -9,7 +9,7 @@ const sequelize = new Sequelize({
 });
 
 const Alliance = sequelize.define(
-	"kr_alliance",
+	"jp_alliance",
 	{
 		user_id: {
 			type: Sequelize.STRING,
@@ -44,7 +44,7 @@ const Alliance = sequelize.define(
 module.exports = {
 	cooldown: 10,
 	data: {
-		name: "check-alliance",
+		name: "jp-check-alliance",
 	},
 	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });

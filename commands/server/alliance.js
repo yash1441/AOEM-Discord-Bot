@@ -46,19 +46,32 @@ module.exports = {
 			.setCustomId("kr-alliance-register")
 			.setEmoji("📜");
 
-		const checkButton = new ButtonBuilder()
-			.setLabel("Check")
+		const jpCheckButton = new ButtonBuilder()
+			.setLabel("JP Check")
 			.setStyle(ButtonStyle.Primary)
-			.setCustomId("check-alliance")
+			.setCustomId("jp-check-alliance")
 			.setEmoji("🔍");
 
-		const row = new ActionRowBuilder().addComponents(
+		const krCheckButton = new ButtonBuilder()
+			.setLabel("KR Check")
+			.setStyle(ButtonStyle.Primary)
+			.setCustomId("kr-check-alliance")
+			.setEmoji("🔍");
+
+		const firstRow = new ActionRowBuilder().addComponents(
 			jpAllianceButton,
-			krAllianceButton,
-			checkButton
+			krAllianceButton
 		);
 
-		await interaction.channel.send({ embeds: [embed], components: [row] });
+		const secondRow = new ActionRowBuilder().addComponents(
+			jpCheckButton,
+			krCheckButton
+		);
+
+		await interaction.channel.send({
+			embeds: [embed],
+			components: [firstRow, secondRow],
+		});
 
 		await interaction.editReply({ content: "Alliance setup complete!" });
 	},
