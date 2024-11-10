@@ -65,10 +65,12 @@ module.exports = {
 			},
 		});
 
+        let message = '';
+
         for (const record of records) {
-            console.log(record.dataValues);
+            message += `${record.dataValues.user_name} - ${record.dataValues.server} - ${record.dataValues.alliance_name} - ${record.dataValues.comment}\n`;
         }
 
-		await interaction.editReply({ content: "Test" });
+		await interaction.editReply({ content: message });
 	},
 };
