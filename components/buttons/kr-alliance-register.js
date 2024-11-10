@@ -129,6 +129,7 @@ async function findOrCreateAlliance(
 			server: server,
 			alliance_name: alliance_name,
 			comment: comment,
+			createdAt: Sequelize.NOW,
 		},
 	});
 
