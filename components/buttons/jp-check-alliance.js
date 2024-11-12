@@ -90,10 +90,11 @@ module.exports = {
 		});
 
 		const data = [];
-		data.push(["User", "Server", "Alliance Name", "Comment"]);
+		data.push(["ID", "User", "Server", "Alliance Name", "Comment"]);
 
 		for (const record of records) {
 			data.push([
+				record.dataValues.id,
 				record.dataValues.user_name,
 				record.dataValues.server,
 				record.dataValues.alliance_name,
