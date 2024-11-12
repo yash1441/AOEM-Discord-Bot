@@ -1,5 +1,6 @@
 const { EmbedBuilder, bold } = require("discord.js");
 const Sequelize = require("sequelize");
+const { table } = require("table");
 require("dotenv").config();
 
 const sequelize = new Sequelize({
@@ -41,6 +42,29 @@ const Alliance = sequelize.define(
 	{ timestamps: false }
 );
 
+const config = {
+	border: {
+		topBody: `─`,
+		topJoin: `┬`,
+		topLeft: `┌`,
+		topRight: `┐`,
+
+		bottomBody: `─`,
+		bottomJoin: `┴`,
+		bottomLeft: `└`,
+		bottomRight: `┘`,
+
+		bodyLeft: `│`,
+		bodyRight: `│`,
+		bodyJoin: `│`,
+
+		joinBody: `─`,
+		joinLeft: `├`,
+		joinRight: `┤`,
+		joinJoin: `┼`,
+	},
+};
+
 module.exports = {
 	cooldown: 10,
 	data: {
@@ -65,12 +89,20 @@ module.exports = {
 			},
 		});
 
-        let message = '';
+		const data = [];
+		data.push(["User", "Server", "Alliance Name", "Comment"]);
 
-        for (const record of records) {
-            message += `${record.dataValues.user_name} - ${record.dataValues.server} - ${record.dataValues.alliance_name} - ${record.dataValues.comment}\n`;
-        }
+		for (const record of records) {
+			data.push([
+				record.dataValues.user_name,
+				record.dataValues.server,
+				record.dataValues.alliance_name,
+				record.dataValues.comment,
+			]);
+		}
 
-		await interaction.editReply({ content: message });
+		await interaction.editReply({
+			content: codeBlock(table(data, config)),
+		});
 	},
 };
