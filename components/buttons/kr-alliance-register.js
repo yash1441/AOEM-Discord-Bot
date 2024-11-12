@@ -95,7 +95,7 @@ module.exports = {
 				const allianceName =
 					modalInteraction.fields.getTextInputValue("allianceName");
 				const comment =
-					modalInteraction.fields.getTextInputValue("comment");
+					modalInteraction.fields.getTextInputValue("comment") ?? '-';
 
 				findOrCreateAlliance(
 					interaction.user.id,
