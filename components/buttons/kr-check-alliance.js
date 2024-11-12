@@ -1,4 +1,4 @@
-const { EmbedBuilder, bold } = require("discord.js");
+const { codeBlock } = require("discord.js");
 const Sequelize = require("sequelize");
 const { table } = require("table");
 require("dotenv").config();
