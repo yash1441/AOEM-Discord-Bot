@@ -1,4 +1,10 @@
-const { codeBlock } = require("discord.js");
+const {
+	codeBlock,
+	ButtonBuilder,
+	ButtonStyle,
+	ActionRowBuilder,
+	PermissionsBitField,
+} = require("discord.js");
 const Sequelize = require("sequelize");
 const { table } = require("table");
 require("dotenv").config();
@@ -74,6 +80,21 @@ module.exports = {
 		await interaction.deferReply({ ephemeral: true });
 		Alliance.sync();
 
+		const editButton = new ButtonBuilder()
+			.setCustomId("jp-edit-alliance")
+			.setLabel("Edit")
+			.setStyle(ButtonStyle.Primary);
+
+		const deleteButton = new ButtonBuilder()
+			.setCustomId("jp-delete-alliance")
+			.setLabel("Delete")
+			.setStyle(ButtonStyle.Danger);
+
+		const buttonRow = new ActionRowBuilder().addComponents(
+			editButton,
+			deleteButton
+		);
+
 		const currentMonthStart = new Date();
 		currentMonthStart.setDate(1);
 		currentMonthStart.setHours(0, 0, 0, 0);
@@ -101,6 +122,16 @@ module.exports = {
 				record.dataValues.comment,
 			]);
 		}
+
+		if (
+			interaction.member.permissions.has(
+				PermissionsBitField.Administrator
+			)
+		)
+			return await interaction.editReply({
+				content: codeBlock(table(data, config)),
+				row: [buttonRow],
+			});
 
 		await interaction.editReply({
 			content: codeBlock(table(data, config)),
