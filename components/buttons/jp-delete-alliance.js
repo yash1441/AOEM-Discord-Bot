@@ -73,7 +73,7 @@ module.exports = {
 		interaction
 			.awaitModalSubmit({ time: 60_000 })
 			.then((modalInteraction) => {
-				const id = parseInt(modalInteraction.fields.getTextInputValue("id")) || 0;
+				const id = modalInteraction.fields.getTextInputValue("id");
 
 				findAndDeleteAlliance(id, modalInteraction);
 			})
@@ -84,7 +84,7 @@ module.exports = {
 async function findAndDeleteAlliance(id, modalInteraction) {
 	const alliance = await Alliance.findOne({
 		where: {
-			id: id,
+			id: parseInt(id) || 0,
 		},
 	});
 
@@ -93,10 +93,12 @@ async function findAndDeleteAlliance(id, modalInteraction) {
 
 		modalInteraction.reply({
 			content: `Alliance with ID ${id} has been deleted.`,
+			ephemeral: true,
 		});
 	} else {
 		modalInteraction.reply({
 			content: `Alliance with ID ${id} not found.`,
+			ephemeral: true,
 		});
 	}
 }
