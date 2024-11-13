@@ -73,15 +73,9 @@ module.exports = {
 		interaction
 			.awaitModalSubmit({ time: 60_000 })
 			.then((modalInteraction) => {
-				const id =
-					parseInt(modalInteraction.fields.getTextInputValue("id")) ||
-					0;
-				modalInteraction
-					.reply({
-						content: `Checking if ${id} is valid.`,
-						ephemeral: true,
-					})
-					.then(findAndDeleteAlliance(id, modalInteraction));
+				const id = parseInt(modalInteraction.fields.getTextInputValue("id")) || 0;
+
+				findAndDeleteAlliance(id, modalInteraction);
 			})
 			.catch(console.error);
 	},
@@ -97,11 +91,11 @@ async function findAndDeleteAlliance(id, modalInteraction) {
 	if (alliance) {
 		await alliance.destroy();
 
-		modalInteraction.editReply({
+		modalInteraction.reply({
 			content: `Alliance with ID ${id} has been deleted.`,
 		});
 	} else {
-		modalInteraction.editReply({
+		modalInteraction.reply({
 			content: `Alliance with ID ${id} not found.`,
 		});
 	}
