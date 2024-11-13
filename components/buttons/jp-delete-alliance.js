@@ -88,7 +88,7 @@ module.exports = {
 async function findAndDeleteAlliance(id, modalInteraction) {
 	const alliance = await Alliance.findOne({
 		where: {
-			id: parseInt(id),
+			id: parseInt(id) ?? 0,
 		},
 	});
 
