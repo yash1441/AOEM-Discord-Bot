@@ -73,13 +73,15 @@ module.exports = {
 		interaction
 			.awaitModalSubmit({ time: 60_000 })
 			.then((modalInteraction) => {
-				const id = parseInt(modalInteraction.fields.getTextInputValue("id")) || 0;
-				modalInteraction.reply({
-					content: `Checking if ${id} is valid.`,
-					ephemeral: true,
-				});
-
-				findAndDeleteAlliance(id, modalInteraction);
+				const id =
+					parseInt(modalInteraction.fields.getTextInputValue("id")) ||
+					0;
+				modalInteraction
+					.reply({
+						content: `Checking if ${id} is valid.`,
+						ephemeral: true,
+					})
+					.then(findAndDeleteAlliance(id, modalInteraction));
 			})
 			.catch(console.error);
 	},
