@@ -3,6 +3,7 @@ const {
 	ActionRowBuilder,
 	TextInputBuilder,
 	TextInputStyle,
+	inlineCode,
 } = require("discord.js");
 const Sequelize = require("sequelize");
 require("dotenv").config();
@@ -91,13 +92,14 @@ async function findAndDeleteAlliance(id, modalInteraction) {
 	if (alliance) {
 		await alliance.destroy();
 
-		modalInteraction.reply({
-			content: `Alliance with ID ${id} has been deleted.`,
+		await modalInteraction.reply({
+			content:
+				"Alliance with ID " + inlineCode(id) + " has been deleted.",
 			ephemeral: true,
 		});
 	} else {
-		modalInteraction.reply({
-			content: `Alliance with ID ${id} not found.`,
+		await modalInteraction.reply({
+			content: "Alliance with ID " + inlineCode(id) + " not found.",
 			ephemeral: true,
 		});
 	}
