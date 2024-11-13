@@ -130,7 +130,7 @@ module.exports = {
 		)
 			return await interaction.editReply({
 				content: codeBlock(table(data, config)),
-				row: [buttonRow],
+				components: [buttonRow],
 			});
 
 		await interaction.editReply({
