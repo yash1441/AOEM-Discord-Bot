@@ -74,12 +74,12 @@ module.exports = {
 			.awaitModalSubmit({ time: 60_000 })
 			.then((modalInteraction) => {
 				const id = modalInteraction.fields.getTextInputValue("id");
-
-				findAndDeleteAlliance(id, modalInteraction);
 				modalInteraction.reply({
 					content: `Checking if ${id} is valid.`,
 					ephemeral: true,
 				});
+
+				findAndDeleteAlliance(id, modalInteraction);
 			})
 			.catch(console.error);
 	},
