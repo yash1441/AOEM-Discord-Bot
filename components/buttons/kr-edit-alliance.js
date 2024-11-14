@@ -15,7 +15,7 @@ const sequelize = new Sequelize({
 });
 
 const Alliance = sequelize.define(
-	"jp_alliance",
+	"kr_alliance",
 	{
 		user_id: {
 			type: Sequelize.STRING,
@@ -50,13 +50,13 @@ const Alliance = sequelize.define(
 module.exports = {
 	cooldown: 10,
 	data: {
-		name: "jp-edit-alliance",
+		name: "kr-edit-alliance",
 	},
 	async execute(interaction) {
 		Alliance.sync();
 
 		const modal = new ModalBuilder()
-			.setCustomId("jp-edit-alliance-modal")
+			.setCustomId("kr-edit-alliance-modal")
 			.setTitle("Edit");
 
 		const idInput = new TextInputBuilder()

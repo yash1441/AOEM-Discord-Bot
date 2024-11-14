@@ -61,19 +61,19 @@ module.exports = {
 
 		const server = new TextInputBuilder()
 			.setCustomId("server")
-			.setLabel("Server")
+			.setLabel("서버")
 			.setStyle(TextInputStyle.Short)
 			.setRequired(true);
 
 		const allianceName = new TextInputBuilder()
 			.setCustomId("allianceName")
-			.setLabel("Alliance Name")
+			.setLabel("연맹")
 			.setStyle(TextInputStyle.Short)
 			.setRequired(true);
 
 		const comment = new TextInputBuilder()
 			.setCustomId("comment")
-			.setLabel("Comment")
+			.setLabel("코멘트")
 			.setStyle(TextInputStyle.Paragraph)
 			.setRequired(false);
 
@@ -144,11 +144,11 @@ async function findOrCreateAlliance(
 	if (created) {
 		modalInteraction.reply({
 			content:
-				bold("Server") +
+				bold("서버") +
 				`: ${server}\n` +
-				bold("Alliance Name") +
+				bold("연맹") +
 				`: ${alliance_name}\n` +
-				bold("Comment") +
+				bold("코멘트") +
 				`: ${comment}`,
 			ephemeral: true,
 		});
@@ -156,11 +156,11 @@ async function findOrCreateAlliance(
 		modalInteraction.reply({
 			content:
 				`You have already registered an alliance this month.\n` +
-				bold("Server") +
+				bold("서버") +
 				`: ${alliance.server}\n` +
-				bold("Alliance Name") +
+				bold("연맹") +
 				`: ${alliance.alliance_name}\n` +
-				bold("Comment") +
+				bold("코멘트") +
 				`: ${alliance.comment}`,
 			ephemeral: true,
 		});

@@ -111,7 +111,7 @@ module.exports = {
 		});
 
 		const data = [];
-		data.push(["ID", "User", "Server", "Alliance Name", "Comment"]);
+		data.push(["ID", "영주", "서버", "연맹", "코멘트"]);
 
 		for (const record of records) {
 			data.push([
