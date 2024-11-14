@@ -26,9 +26,11 @@ module.exports = {
 		await interaction.deferReply({ ephemeral: true });
 
 		const embed = new EmbedBuilder()
-			.setTitle("Alliance")
+			.setTitle("Alliance Recruitment Usage Rules")
 			.setColor("White")
-			.setDescription(bold("Rules & Notice"))
+			.setDescription(
+				"1. This bot is designed to help governors recruit alliance members conveniently. Governors who wish to recruit should fill in the relevant information as prompted.\n2. Please ensure that the content you fill in complies with server rules. Any content violating the rules may be deleted or modified by administrators.\n3. Each alliance is limited to one registration. Please do not register multiple times.\n4. Registration information will be cleared monthly. Governors who wish to continue recruiting should register again."
+			)
 			.setFooter({
 				text: "Age of Empires Mobile",
 				iconURL: "https://i.ibb.co/Fm4fttV/Logo.png",

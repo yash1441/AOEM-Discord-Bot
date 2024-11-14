@@ -111,7 +111,7 @@ module.exports = {
 		});
 
 		const data = [];
-		data.push(["ID", "領主名", "サーバー", "同盟", "コメント"]);
+		data.push(["ID", "User", "Server", "Alliance Name", "Comment"]);
 
 		for (const record of records) {
 			data.push([
