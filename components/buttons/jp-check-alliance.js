@@ -123,20 +123,18 @@ module.exports = {
 			]);
 		}
 
-		const message = codeBlock(table(data, config).slice(0, 1950));
-
 		if (
 			interaction.member.permissions.has(
 				PermissionsBitField.Administrator
 			)
 		)
 			return await interaction.editReply({
-				content: message,
+				content: codeBlock(table(data, config)),
 				components: [buttonRow],
 			});
 
 		await interaction.editReply({
-			content: message,
+			content: codeBlock(table(data, config)),
 		});
 	},
 };
