@@ -123,7 +123,7 @@ module.exports = {
 			]);
 		}
 
-		const message = codeBlock(table(data, config).slice(0, 1999));
+		const message = codeBlock(table(data, config).slice(0, 1994));
 
 		if (
 			interaction.member.permissions.has(
