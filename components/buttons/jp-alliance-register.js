@@ -75,6 +75,7 @@ module.exports = {
 			.setCustomId("comment")
 			.setLabel("コメント")
 			.setStyle(TextInputStyle.Paragraph)
+			.setMaxLength(50)
 			.setRequired(false);
 
 		const firstActionRow = new ActionRowBuilder().addComponents(server);
