@@ -81,12 +81,12 @@ module.exports = {
 		Alliance.sync();
 
 		const editButton = new ButtonBuilder()
-			.setCustomId("jp-edit-alliance")
+			.setCustomId("kr-edit-alliance")
 			.setLabel("Edit")
 			.setStyle(ButtonStyle.Primary);
 
 		const deleteButton = new ButtonBuilder()
-			.setCustomId("jp-delete-alliance")
+			.setCustomId("kr-delete-alliance")
 			.setLabel("Delete")
 			.setStyle(ButtonStyle.Danger);
 
