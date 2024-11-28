@@ -63,12 +63,14 @@ module.exports = {
 			.setCustomId("server")
 			.setLabel("サーバー")
 			.setStyle(TextInputStyle.Short)
+			.setMaxLength(10)
 			.setRequired(true);
 
 		const allianceName = new TextInputBuilder()
 			.setCustomId("allianceName")
 			.setLabel("同盟名")
 			.setStyle(TextInputStyle.Short)
+			.setMaxLength(10)
 			.setRequired(true);
 
 		const comment = new TextInputBuilder()
