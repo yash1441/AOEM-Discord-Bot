@@ -123,6 +123,8 @@ module.exports = {
 			]);
 		}
 
+		console.log(codeBlock(table(data, config)).length);
+
 		if (
 			interaction.member.permissions.has(
 				PermissionsBitField.Administrator
