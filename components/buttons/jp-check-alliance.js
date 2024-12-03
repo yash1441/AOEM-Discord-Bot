@@ -4,6 +4,7 @@ const {
 	ButtonStyle,
 	ActionRowBuilder,
 	PermissionsBitField,
+	MessageAttachment,
 } = require("discord.js");
 const Sequelize = require("sequelize");
 const { table } = require("table");
@@ -123,7 +124,10 @@ module.exports = {
 			]);
 		}
 
-		console.log(codeBlock(table(data, config)).length);
+		const attachment = new MessageAttachment(
+			Buffer.from(table(data, config)),
+			"alliance.txt"
+		);
 
 		if (
 			interaction.member.permissions.has(
@@ -131,12 +135,12 @@ module.exports = {
 			)
 		)
 			return await interaction.editReply({
-				content: codeBlock(table(data, config)),
+				files: [attachment],
 				components: [buttonRow],
 			});
 
 		await interaction.editReply({
-			content: codeBlock(table(data, config)),
+			files: [attachment],
 		});
 	},
 };
