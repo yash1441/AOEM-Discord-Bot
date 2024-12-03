@@ -1,5 +1,4 @@
 const {
-	codeBlock,
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
@@ -127,7 +126,7 @@ module.exports = {
 		const content = Buffer.from(table(data, config));
 
 		const attachment = new AttachmentBuilder(content, {
-			name: "alliance.txt",
+			name: "jp_alliance.txt",
 		});
 
 		if (

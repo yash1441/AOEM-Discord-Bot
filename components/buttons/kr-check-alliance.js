@@ -1,9 +1,9 @@
 const {
-	codeBlock,
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
 	PermissionsBitField,
+	AttachmentBuilder,
 } = require("discord.js");
 const Sequelize = require("sequelize");
 const { table } = require("table");
@@ -123,18 +123,24 @@ module.exports = {
 			]);
 		}
 
+		const content = Buffer.from(table(data, config));
+
+		const attachment = new AttachmentBuilder(content, {
+			name: "kr_alliance.txt",
+		});
+
 		if (
 			interaction.member.permissions.has(
 				PermissionsBitField.Administrator
 			)
 		)
 			return await interaction.editReply({
-				content: codeBlock(table(data, config)),
+				files: [attachment],
 				components: [buttonRow],
 			});
 
 		await interaction.editReply({
-			content: codeBlock(table(data, config)),
+			files: [attachment],
 		});
 	},
 };
