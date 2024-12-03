@@ -4,7 +4,7 @@ const {
 	ButtonStyle,
 	ActionRowBuilder,
 	PermissionsBitField,
-	MessageAttachment,
+	AttachmentBuilder,
 } = require("discord.js");
 const Sequelize = require("sequelize");
 const { table } = require("table");
@@ -124,10 +124,11 @@ module.exports = {
 			]);
 		}
 
-		const attachment = new MessageAttachment(
-			Buffer.from(table(data, config)),
-			"alliance.txt"
-		);
+		const content = Buffer.from(table(data, config));
+
+		const attachment = new AttachmentBuilder(content, {
+			name: "alliance.txt",
+		});
 
 		if (
 			interaction.member.permissions.has(
