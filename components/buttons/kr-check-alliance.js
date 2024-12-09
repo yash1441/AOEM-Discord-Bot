@@ -131,7 +131,7 @@ module.exports = {
 
 		if (
 			interaction.member.permissions.has(
-				PermissionsBitField.Administrator
+				PermissionsBitField.Flags.Administrator
 			)
 		)
 			return await interaction.editReply({
