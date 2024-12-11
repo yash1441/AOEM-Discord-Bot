@@ -98,7 +98,7 @@ module.exports = {
 				const allianceName =
 					modalInteraction.fields.getTextInputValue("allianceName");
 				const comment =
-					modalInteraction.fields.getTextInputValue("comment") ?? '-';
+					modalInteraction.fields.getTextInputValue("comment") ?? "-";
 
 				findOrCreateAlliance(
 					interaction.user.id,
@@ -129,7 +129,10 @@ async function findOrCreateAlliance(
 
 	const [alliance, created] = await Alliance.findOrCreate({
 		where: {
-			user_id: user_id,
+			[Sequelize.Op.or]: [
+				{ user_id: user_id },
+				{ alliance_name: alliance_name },
+			],
 			/*createdAt: {
 				[Sequelize.Op.gte]: currentMonthStart,
 				[Sequelize.Op.lt]: nextMonthStart,
@@ -158,7 +161,7 @@ async function findOrCreateAlliance(
 	} else {
 		modalInteraction.reply({
 			content:
-				`You have already registered an alliance this month.\n` +
+				`You have already registered an alliance or there is already an alliance with a similar name.\n` +
 				bold("서버") +
 				`: ${alliance.server}\n` +
 				bold("연맹") +
