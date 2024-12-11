@@ -101,14 +101,14 @@ module.exports = {
 		const nextMonthStart = new Date(currentMonthStart);
 		nextMonthStart.setMonth(nextMonthStart.getMonth() + 1);
 
-		const records = await Alliance.findAll({
+		const records = await Alliance.findAll(/*{
 			where: {
 				createdAt: {
 					[Sequelize.Op.gte]: currentMonthStart,
 					[Sequelize.Op.lt]: nextMonthStart,
 				},
 			},
-		});
+		}*/);
 
 		const data = [];
 		data.push(["ID", "User", "Server", "Alliance Name", "Comment"]);
