@@ -130,10 +130,10 @@ async function findOrCreateAlliance(
 	const [alliance, created] = await Alliance.findOrCreate({
 		where: {
 			user_id: user_id,
-			createdAt: {
+			/*createdAt: {
 				[Sequelize.Op.gte]: currentMonthStart,
 				[Sequelize.Op.lt]: nextMonthStart,
-			},
+			},*/
 		},
 		defaults: {
 			user_id: user_id,
