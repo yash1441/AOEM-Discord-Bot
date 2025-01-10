@@ -39,24 +39,17 @@ module.exports = {
                 const governorId =
                     modalInteraction.fields.getTextInputValue("governor-id");
 
-                findOrCreateRegistration(
-                    interaction.user.id,
-                    interaction.user.username,
-                    governorId,
-                    modalInteraction
-                );
+                findOrCreateRegistration(governorId, modalInteraction);
             })
             .catch(console.error);
     },
 };
 
-async function findOrCreateRegistration(
-    userId,
-    username,
-    governorId,
-    modalInteraction
-) {
-    await modalInteraction.deferReply({ flags: MessageFlags.Ephemeral });
+async function findOrCreateRegistration(governorId, interaction) {
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+    const roles = interaction.member.roles.cache;
+    console.log(roles);
     const now = new Date();
 
     await Sheets.appendRow(
@@ -72,7 +65,7 @@ async function findOrCreateRegistration(
         ]
     );
 
-    await modalInteraction.editReply({
+    await interaction.editReply({
         content: "Registered successfully!",
     });
 }
