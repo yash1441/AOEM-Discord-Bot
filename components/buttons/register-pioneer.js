@@ -48,8 +48,10 @@ module.exports = {
 async function findOrCreateRegistration(governorId, interaction) {
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-    const roles = interaction.member.roles.cache;
-    console.log(roles);
+    const roles = interaction.member.roles.cache
+        .map((role) => role.name)
+        .join(", ");
+
     const now = new Date();
 
     await Sheets.appendRow(
@@ -57,9 +59,10 @@ async function findOrCreateRegistration(governorId, interaction) {
         "Registration!A2:Z",
         [
             [
-                userId,
-                username,
+                interaction.user.id,
+                interaction.user.username,
                 governorId,
+                roles,
                 date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
             ],
         ]
