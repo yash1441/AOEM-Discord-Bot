@@ -5,6 +5,7 @@ const {
     ButtonStyle,
     ActionRowBuilder,
     PermissionFlagsBits,
+    MessageFlags,
 } = require("discord.js");
 
 module.exports = {
@@ -21,7 +22,7 @@ module.exports = {
                 .setDescription("Setup register embed and buttons")
         ),
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const embed = new EmbedBuilder()
             .setTitle("Pioneer Server Registration")
