@@ -1,7 +1,6 @@
 const {
     SlashCommandBuilder,
     PermissionFlagsBits,
-    MessageFlags,
     codeBlock,
     EmbedBuilder,
     MessageFlags,
