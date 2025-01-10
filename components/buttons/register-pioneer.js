@@ -72,7 +72,7 @@ async function findOrCreateRegistration(
         ]
     );
 
-    await modalInteraction.reply({
+    await modalInteraction.editReply({
         content: "Registered successfully!",
     });
 }
