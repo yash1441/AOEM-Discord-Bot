@@ -69,8 +69,6 @@ async function findOrCreateRegistration(governorId, interaction) {
         ]
     );
 
-    console.log(found, created);
-
     if (found) {
         return await interaction.editReply({
             content: "You have already registered!",
