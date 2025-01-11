@@ -1,8 +1,8 @@
-const { google } = require('googleapis');
+const { google } = require("googleapis");
 
 const auth = new google.auth.GoogleAuth({
-	keyFile: "cred.json", // Make sure to upload the cred.json file //
-	scopes: "https://www.googleapis.com/auth/spreadsheets"
+    keyFile: "cred.json", // Make sure to upload the cred.json file //
+    scopes: "https://www.googleapis.com/auth/spreadsheets",
 });
 
 async function authorize() {
@@ -10,7 +10,7 @@ async function authorize() {
 
     const sheets = google.sheets({
         version: "v4",
-        auth: client
+        auth: client,
     });
 
     return sheets;
@@ -20,7 +20,7 @@ async function getSpreadsheet(sheetId, range) {
     const sheets = await authorize();
     const result = await sheets.spreadsheets.values.get({
         spreadsheetId: sheetId,
-        range: range
+        range: range,
     });
 
     return result.data.values;
@@ -33,11 +33,24 @@ async function appendRow(sheetId, range, values) {
         range: range,
         valueInputOption: "USER_ENTERED",
         resource: {
-            values
-        }
+            values,
+        },
     });
 
     return result;
 }
 
-module.exports = { getSpreadsheet, appendRow }
+async function findOrAppend(sheetId, range, toFind, values) {
+    const sheets = await authorize();
+    const result = await sheets.spreadsheets.values.get({
+        spreadsheetId: sheetId,
+        range: range,
+    });
+
+    const foundRows = result.data.values.filter((row) => row.includes(toFind));
+
+    if (foundRows.length) return foundRows;
+    else return await appendRow(sheetId, range, values);
+}
+
+module.exports = { getSpreadsheet, appendRow, findOrAppend };
