@@ -49,8 +49,8 @@ async function findOrAppend(sheetId, range, toFind, values) {
 
     const foundRows = result.data.values.filter((row) => row.includes(toFind));
 
-    if (foundRows.length) return foundRows;
-    else return await appendRow(sheetId, range, values);
+    if (foundRows.length) return [foundRows, null];
+    else return [null, await appendRow(sheetId, range, values)];
 }
 
 module.exports = { getSpreadsheet, appendRow, findOrAppend };
