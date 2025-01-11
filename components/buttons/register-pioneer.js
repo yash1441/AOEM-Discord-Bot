@@ -54,9 +54,10 @@ async function findOrCreateRegistration(governorId, interaction) {
 
     const now = new Date();
 
-    await Sheets.appendRow(
+    const [found, created] = await Sheets.findOrAppend(
         process.env.PIONEER_REGISTRATION_SHEET,
         "Registration!A2:Z",
+        interaction.user.id,
         [
             [
                 interaction.user.id,
@@ -67,6 +68,14 @@ async function findOrCreateRegistration(governorId, interaction) {
             ],
         ]
     );
+
+    console.log(found, created);
+
+    if (found) {
+        return await interaction.editReply({
+            content: "You have already registered!",
+        });
+    }
 
     await interaction.editReply({
         content: "Registered successfully!",
