@@ -47,6 +47,10 @@ async function findOrAppend(sheetId, range, toFind, values) {
         range: range,
     });
 
+    if (!result.data.values || result.data.values.length === 0) {
+        return [null, await appendRow(sheetId, range, values)];
+    }
+
     const foundRows = result.data.values.filter((row) => row.includes(toFind));
 
     if (foundRows.length) return [foundRows, null];
