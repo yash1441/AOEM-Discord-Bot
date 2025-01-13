@@ -16,7 +16,7 @@ async function authorize() {
     return sheets;
 }
 
-async function getSpreadsheet(sheetId, range) {
+async function getSpreadsheet(sheetId, range, filterColumn = null) {
     const sheets = await authorize();
     const result = await sheets.spreadsheets.values.get({
         spreadsheetId: sheetId,
