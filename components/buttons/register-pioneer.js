@@ -49,6 +49,7 @@ async function findOrCreateRegistration(governorId, interaction) {
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const roles = interaction.member.roles.cache
+        .filter((role) => role.name !== "@everyone")
         .map((role) => role.name)
         .join(", ");
 
