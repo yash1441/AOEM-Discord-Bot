@@ -23,12 +23,20 @@ module.exports = {
                 text: "Age of Empires Mobile",
                 iconURL: "https://i.ibb.co/Fm4fttV/Logo.png",
             })
-            .addFields({
-                name: "Discord ID",
-                value: interaction.user.id,
-            });
-
-        console.log(record.values);
+            .addFields(
+                {
+                    name: "Discord ID",
+                    value: record.values[0],
+                },
+                {
+                    name: "Discord Username",
+                    value: record.values[1],
+                },
+                {
+                    name: "Governor ID",
+                    value: record.values[2],
+                }
+            );
 
         await interaction.editReply({
             embeds: [embed],
