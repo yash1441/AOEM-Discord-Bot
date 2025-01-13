@@ -21,7 +21,8 @@ module.exports = {
 
         const records = await Sheets.getSpreadsheet(
             process.env.PIONEER_REGISTRATION_SHEET,
-            "Registration!A2:Z"
+            "Registration!A2:Z",
+            "A"
         );
 
         console.log(records);
