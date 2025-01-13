@@ -1,4 +1,4 @@
-const { EmbedBuilder, MessageFlags } = require("discord.js");
+const { EmbedBuilder, MessageFlags, inlineCode } = require("discord.js");
 const Sheets = require("../../utils/sheets");
 require("dotenv").config();
 
@@ -36,6 +36,17 @@ module.exports = {
                     name: "Governor ID",
                     value: record.values[2],
                 }
+            );
+
+        if (record.values[5] === "FALSE")
+            embed.setDescription(
+                "Sorry! You were not selected. Please try again next time."
+            );
+        else
+            embed.setDescription(
+                "Congratulations! You are selected for pioneer server. Your CD Key is " +
+                    inlineCode("1234567890") +
+                    "."
             );
 
         await interaction.editReply({
