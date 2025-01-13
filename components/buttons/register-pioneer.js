@@ -65,6 +65,7 @@ async function findOrCreateRegistration(governorId, interaction) {
                 governorId,
                 roles,
                 date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
+                "FALSE",
             ],
         ]
     );
