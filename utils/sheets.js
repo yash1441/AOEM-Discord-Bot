@@ -101,8 +101,9 @@ async function findRow(sheetId, range, toFind) {
     const startRow = rowIndex + 2; // Assuming the range starts from row 2
     const endRow = startRow;
     const foundRange = `${range.split("!")[0]}!${startRow}:${endRow}`;
+    const rowValues = result.data.values[rowIndex];
 
-    return foundRange;
+    return { range: foundRange, values: rowValues };
 }
 
 module.exports = {
