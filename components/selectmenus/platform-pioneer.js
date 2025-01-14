@@ -1,5 +1,4 @@
 const {
-    ComponentType,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
