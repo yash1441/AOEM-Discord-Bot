@@ -18,11 +18,6 @@ module.exports = {
     async execute(interaction) {
         const platform = interaction.values[0];
 
-        await interaction.message.edit({
-            content: "You selected: " + inlineCode(platform),
-            components: [],
-        });
-
         const modal = new ModalBuilder()
             .setCustomId("register-pioneer-modal")
             .setTitle("Pioneer Server Registration");
