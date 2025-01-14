@@ -63,28 +63,27 @@ module.exports = {
             );
         };
 
-        interaction.message
-            .awaitMessageComponent({
+        try {
+            const collected = await interaction.awaitMessageComponent({
                 filter: collectorFilter,
                 componentType: ComponentType.StringSelect,
                 time: 60_000,
-            })
-            .then((collected) => {
-                platform = collected.values[0];
-                interaction.editReply({
-                    content: "You selected: " + inlineCode(platform),
-                    components: [],
-                });
-
-                collected.showModal(modal);
-            })
-            .catch((err) => {
-                return interaction.editReply({
-                    content:
-                        "You did not select a platform in time. Please try again.",
-                    components: [],
-                });
             });
+
+            platform = collected.values[0];
+            await interaction.editReply({
+                content: "You selected: " + inlineCode(platform),
+                components: [],
+            });
+
+            await collected.showModal(modal);
+        } catch (err) {
+            return interaction.editReply({
+                content:
+                    "You did not select a platform in time. Please try again.",
+                components: [],
+            });
+        }
 
         await interaction
             .awaitModalSubmit({ time: 60_000 })
