@@ -56,30 +56,35 @@ module.exports = {
             flags: MessageFlags.Ephemeral,
         });
 
-        const collector = interaction.createMessageComponentCollector({
-            componentType: ComponentType.StringSelect,
-            time: 60_000,
-        });
+        const collectorFilter = (i) => {
+            return (
+                i.user.id === interaction.user.id &&
+                i.customId === "register-pioneer-select"
+            );
+        };
 
-        collector.on("collect", async (i) => {
-            platform = collected.values[0];
-            await interaction.editReply({
-                content: "You selected: " + inlineCode(platform),
-                components: [],
-            });
+        interaction.message
+            .awaitMessageComponent({
+                filter: collectorFilter,
+                componentType: ComponentType.StringSelect,
+                time: 60_000,
+            })
+            .then((collected) => {
+                platform = collected.values[0];
+                interaction.editReply({
+                    content: "You selected: " + inlineCode(platform),
+                    components: [],
+                });
 
-            await collected.showModal(modal);
-        });
-
-        collector.on("end", async (collected, reason) => {
-            if (reason === "time") {
-                return await interaction.editReply({
+                collected.showModal(modal);
+            })
+            .catch((err) => {
+                return interaction.editReply({
                     content:
                         "You did not select a platform in time. Please try again.",
                     components: [],
                 });
-            }
-        });
+            });
 
         await interaction
             .awaitModalSubmit({ time: 60_000 })
