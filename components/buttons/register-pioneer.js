@@ -2,6 +2,7 @@ const {
     ActionRowBuilder,
     StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder,
+    ComponentType,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
@@ -55,16 +56,12 @@ module.exports = {
             flags: MessageFlags.Ephemeral,
         });
 
-        const collectorFilter = (i) =>
-            i.user.id === interaction.user.id &&
-            i.customId === "register-pioneer-select";
+        const collector = interaction.createMessageComponentCollector({
+            componentType: ComponentType.StringSelect,
+            time: 60_000,
+        });
 
-        try {
-            const collected = await interaction.awaitMessageComponent({
-                filter: collectorFilter,
-                time: 60_000,
-            });
-
+        collector.on("collect", async (i) => {
             platform = collected.values[0];
             await interaction.editReply({
                 content: "You selected: " + inlineCode(platform),
@@ -72,15 +69,19 @@ module.exports = {
             });
 
             await collected.showModal(modal);
-        } catch (e) {
-            return await interaction.editReply({
-                content:
-                    "You did not select a platform in time. Please try again.",
-                components: [],
-            });
-        }
+        });
 
-        interaction
+        collector.on("end", async (collected, reason) => {
+            if (reason === "time") {
+                return await interaction.editReply({
+                    content:
+                        "You did not select a platform in time. Please try again.",
+                    components: [],
+                });
+            }
+        });
+
+        await interaction
             .awaitModalSubmit({ time: 60_000 })
             .then((modalInteraction) => {
                 const governorId =
