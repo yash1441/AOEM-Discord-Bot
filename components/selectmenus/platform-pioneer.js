@@ -15,7 +15,7 @@ module.exports = {
         name: "platform-pioneer",
     },
     async execute(interaction) {
-        const platform = collected.values[0];
+        const platform = interaction.values[0];
 
         await interaction.update({
             content: "You selected: " + inlineCode(platform),
