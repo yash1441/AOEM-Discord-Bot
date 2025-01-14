@@ -27,14 +27,22 @@ module.exports = {
                 {
                     name: "Discord ID",
                     value: record.values[0],
+                    inline: true,
                 },
                 {
                     name: "Discord Username",
                     value: record.values[1],
+                    inline: true,
                 },
                 {
                     name: "Governor ID",
                     value: record.values[2],
+                    inline: true,
+                },
+                {
+                    name: "Platform",
+                    value: record.values[6],
+                    inline: true,
                 }
             );
 
