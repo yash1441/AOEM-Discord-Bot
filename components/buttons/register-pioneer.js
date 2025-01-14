@@ -1,9 +1,12 @@
 const {
-    ModalBuilder,
     ActionRowBuilder,
+    ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder,
     MessageFlags,
+    inlineCode,
 } = require("discord.js");
 const date = require("date-and-time");
 const Sheets = require("../../utils/sheets");
@@ -15,6 +18,23 @@ module.exports = {
         name: "register-pioneer",
     },
     async execute(interaction) {
+        let platform = "";
+        const selectMenu = new StringSelectMenuBuilder()
+            .setCustomId("register-pioneer-select")
+            .setPlaceholder("Choose your platform")
+            .addOptions(
+                new StringSelectMenuOptionBuilder()
+                    .setLabel("Android")
+                    .setValue("Android")
+                    .setEmoji("🤖"),
+                new StringSelectMenuOptionBuilder()
+                    .setLabel("iOS")
+                    .setValue("iOS")
+                    .setEmoji("🍏")
+            );
+
+        const selectMenuRow = new ActionRowBuilder().addComponents(selectMenu);
+
         const modal = new ModalBuilder()
             .setCustomId("regiester-pioneer-modal")
             .setTitle("Pioneer Server Registration");
@@ -25,13 +45,40 @@ module.exports = {
             .setStyle(TextInputStyle.Short)
             .setRequired(true);
 
-        const firstActionRow = new ActionRowBuilder().addComponents(
-            governorIdInput
-        );
+        const modalRow = new ActionRowBuilder().addComponents(governorIdInput);
 
-        modal.addComponents(firstActionRow);
+        modal.addComponents(modalRow);
 
-        await interaction.showModal(modal);
+        await interaction.reply({
+            content: "Please select your platform",
+            components: [selectMenuRow],
+            flags: MessageFlags.Ephemeral,
+        });
+
+        const collectorFilter = (i) =>
+            i.user.id === interaction.user.id &&
+            i.customId === "register-pioneer-select";
+
+        try {
+            const collected = await response.awaitMessageComponent({
+                filter: collectorFilter,
+                time: 60_000,
+            });
+
+            platform = i.values[0];
+            await interaction.editReply({
+                content: "You selected: " + inlineCode(selection),
+                components: [],
+            });
+
+            await collected.showModal(modal);
+        } catch (e) {
+            return await interaction.editReply({
+                content:
+                    "You did not select a platform in time. Please try again.",
+                components: [],
+            });
+        }
 
         interaction
             .awaitModalSubmit({ time: 60_000 })
@@ -39,13 +86,17 @@ module.exports = {
                 const governorId =
                     modalInteraction.fields.getTextInputValue("governor-id");
 
-                findOrCreateRegistration(governorId, modalInteraction);
+                findOrCreateRegistration(
+                    modalInteraction,
+                    governorId,
+                    platform
+                );
             })
             .catch(console.error);
     },
 };
 
-async function findOrCreateRegistration(governorId, interaction) {
+async function findOrCreateRegistration(interaction, governorId, platform) {
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const roles = interaction.member.roles.cache
@@ -67,6 +118,7 @@ async function findOrCreateRegistration(governorId, interaction) {
                 roles,
                 date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
                 "FALSE",
+                platform,
             ],
         ]
     );
