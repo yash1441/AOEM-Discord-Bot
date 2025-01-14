@@ -34,8 +34,6 @@ module.exports = {
 
         await interaction.showModal(modal);
 
-        console.log(interaction.message);
-
         await interaction
             .awaitModalSubmit({ time: 60_000 })
             .then((modalInteraction) => {
