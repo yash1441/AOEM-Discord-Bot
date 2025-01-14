@@ -18,7 +18,7 @@ module.exports = {
     async execute(interaction) {
         const platform = interaction.values[0];
 
-        await interaction.update({
+        await interaction.messasge.edit({
             content: "You selected: " + inlineCode(platform),
             components: [],
         });
