@@ -1,10 +1,10 @@
 const {
     ActionRowBuilder,
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
-    StringSelectMenuBuilder,
-    StringSelectMenuOptionBuilder,
     MessageFlags,
     inlineCode,
 } = require("discord.js");
@@ -36,7 +36,7 @@ module.exports = {
         const selectMenuRow = new ActionRowBuilder().addComponents(selectMenu);
 
         const modal = new ModalBuilder()
-            .setCustomId("regiester-pioneer-modal")
+            .setCustomId("register-pioneer-modal")
             .setTitle("Pioneer Server Registration");
 
         const governorIdInput = new TextInputBuilder()
@@ -60,14 +60,14 @@ module.exports = {
             i.customId === "register-pioneer-select";
 
         try {
-            const collected = await response.awaitMessageComponent({
+            const collected = await interaction.awaitMessageComponent({
                 filter: collectorFilter,
                 time: 60_000,
             });
 
-            platform = i.values[0];
+            platform = collected.values[0];
             await interaction.editReply({
-                content: "You selected: " + inlineCode(selection),
+                content: "You selected: " + inlineCode(platform),
                 components: [],
             });
 
@@ -86,13 +86,15 @@ module.exports = {
                 const governorId =
                     modalInteraction.fields.getTextInputValue("governor-id");
 
-                findOrCreateRegistration(
-                    modalInteraction,
-                    governorId,
-                    platform
-                );
+                findOrCreateRegistration(governorId, modalInteraction);
             })
-            .catch(console.error);
+            .catch((e) => {
+                interaction.editReply({
+                    content:
+                        "You did not submit the modal in time. Please try again.",
+                    components: [],
+                });
+            });
     },
 };
 
