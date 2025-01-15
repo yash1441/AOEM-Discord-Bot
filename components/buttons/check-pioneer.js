@@ -25,6 +25,15 @@ module.exports = {
         );
 
         const unusedCodes = codes.filter((row) => !row[1]).map((row) => row[0]);
+        if (unusedCodes.length === 0)
+            return await interaction.editReply("No CD Keys available.");
+
+        const codeIndex = codes.findIndex((row) => row[0] === unboundCodes[0]);
+        const codeRange = `CDK!A${codeIndex + 2}:C${codeIndex + 2}`;
+
+        await Sheets.updateRow(process.env.PIONEER_REGISTRATION_SHEET, range, [
+            [unboundCodes[0], interaction.user.id, interaction.user.username],
+        ]);
 
         console.log(unusedCodes);
 
@@ -65,7 +74,7 @@ module.exports = {
         else
             embed.setDescription(
                 "Congratulations! You are selected for pioneer server. Your CD Key is " +
-                    inlineCode("1234567890") +
+                    inlineCode(unboundCodes[0]) +
                     "."
             );
 
