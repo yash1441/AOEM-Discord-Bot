@@ -87,8 +87,6 @@ module.exports = {
             [[unusedCodes[0], interaction.user.id, interaction.user.username]]
         );
 
-        console.log(record.range.split(":")[0].slice(1));
-
         await Sheets.updateRow(
             process.env.PIONEER_REGISTRATION_SHEET,
             "Registration!H" +
