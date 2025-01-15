@@ -69,7 +69,7 @@ module.exports = {
             });
         }
 
-        console.log(record.values, record.values.length);
+        console.log(record.values, record.values.length, record.range);
 
         const codes = await Sheets.getSpreadsheet(
             process.env.PIONEER_REGISTRATION_SHEET,
