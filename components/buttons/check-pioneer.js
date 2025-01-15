@@ -16,6 +16,16 @@ module.exports = {
             interaction.user.id
         );
 
+        if (record === null)
+            return await interaction.editReply("You are not registered.");
+
+        const codes = await Sheets.getSpreadsheet(
+            process.env.PIONEER_REGISTRATION_SHEET,
+            "CDK!A2:Z"
+        );
+
+        console.log(codes);
+
         const embed = new EmbedBuilder()
             .setTitle("Pioneer Registration")
             .setColor("White")
