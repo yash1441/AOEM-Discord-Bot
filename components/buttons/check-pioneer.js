@@ -31,9 +31,11 @@ module.exports = {
         const codeIndex = codes.findIndex((row) => row[0] === unboundCodes[0]);
         const codeRange = `CDK!A${codeIndex + 2}:C${codeIndex + 2}`;
 
-        await Sheets.updateRow(process.env.PIONEER_REGISTRATION_SHEET, range, [
-            [unboundCodes[0], interaction.user.id, interaction.user.username],
-        ]);
+        await Sheets.updateRow(
+            process.env.PIONEER_REGISTRATION_SHEET,
+            codeRange,
+            [[unboundCodes[0], interaction.user.id, interaction.user.username]]
+        );
 
         console.log(unusedCodes);
 
