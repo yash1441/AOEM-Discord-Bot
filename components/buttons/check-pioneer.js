@@ -69,8 +69,6 @@ module.exports = {
             });
         }
 
-        console.log(record.values, record.values.length, record.range);
-
         const codes = await Sheets.getSpreadsheet(
             process.env.PIONEER_REGISTRATION_SHEET,
             "CDK!A2:Z"
@@ -87,6 +85,12 @@ module.exports = {
             process.env.PIONEER_REGISTRATION_SHEET,
             codeRange,
             [[unusedCodes[0], interaction.user.id, interaction.user.username]]
+        );
+
+        await Sheets.updateRow(
+            process.env.PIONEER_REGISTRATION_SHEET,
+            `Registration!H${record.range.split(":")[0].slice(1)}`,
+            unusedCodes[0]
         );
 
         embed.setDescription(
