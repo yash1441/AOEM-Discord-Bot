@@ -19,26 +19,6 @@ module.exports = {
         if (record === null)
             return await interaction.editReply("You are not registered.");
 
-        const codes = await Sheets.getSpreadsheet(
-            process.env.PIONEER_REGISTRATION_SHEET,
-            "CDK!A2:Z"
-        );
-
-        const unusedCodes = codes.filter((row) => !row[1]).map((row) => row[0]);
-        if (unusedCodes.length === 0)
-            return await interaction.editReply("No CD Keys available.");
-
-        const codeIndex = codes.findIndex((row) => row[0] === unboundCodes[0]);
-        const codeRange = `CDK!A${codeIndex + 2}:C${codeIndex + 2}`;
-
-        await Sheets.updateRow(
-            process.env.PIONEER_REGISTRATION_SHEET,
-            codeRange,
-            [[unboundCodes[0], interaction.user.id, interaction.user.username]]
-        );
-
-        console.log(unusedCodes);
-
         const embed = new EmbedBuilder()
             .setTitle("Pioneer Registration")
             .setColor("White")
@@ -69,16 +49,49 @@ module.exports = {
                 }
             );
 
-        if (record.values[5] === "FALSE")
+        if (record.values[5] === "FALSE") {
             embed.setDescription(
                 "Sorry! You were not selected. Please try again next time."
             );
-        else
+            return await interaction.editReply({
+                embeds: [embed],
+            });
+        }
+
+        if (record.values.length > 7) {
             embed.setDescription(
                 "Congratulations! You are selected for pioneer server. Your CD Key is " +
-                    inlineCode(unboundCodes[0]) +
+                    inlineCode(record.values[7]) +
                     "."
             );
+            return await interaction.editReply({
+                embeds: [embed],
+            });
+        }
+
+        const codes = await Sheets.getSpreadsheet(
+            process.env.PIONEER_REGISTRATION_SHEET,
+            "CDK!A2:Z"
+        );
+
+        const unusedCodes = codes.filter((row) => !row[1]).map((row) => row[0]);
+        if (unusedCodes.length === 0)
+            return await interaction.editReply("No CD Keys available.");
+
+        const codeIndex = codes.findIndex((row) => row[0] === unusedCodes[0]);
+        const codeRange = `CDK!A${codeIndex + 2}:C${codeIndex + 2}`;
+
+        await Sheets.updateRow(
+            process.env.PIONEER_REGISTRATION_SHEET,
+            codeRange,
+            [[unusedCodes[0], interaction.user.id, interaction.user.username]]
+        );
+
+        embed.setDescription(
+            "Congratulations! You are selected for pioneer server. Your CD Key is " +
+                inlineCode(unusedCodes[0]) +
+                "."
+        );
 
         await interaction.editReply({
             embeds: [embed],
