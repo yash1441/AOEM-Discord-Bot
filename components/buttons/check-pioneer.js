@@ -69,6 +69,8 @@ module.exports = {
             });
         }
 
+        console.log(record.values, record.values.length);
+
         const codes = await Sheets.getSpreadsheet(
             process.env.PIONEER_REGISTRATION_SHEET,
             "CDK!A2:Z"
