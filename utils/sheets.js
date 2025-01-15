@@ -99,8 +99,12 @@ async function findRow(sheetId, range, toFind) {
     }
 
     const startRow = rowIndex + 2; // Assuming the range starts from row 2
-    const endRow = startRow;
-    const foundRange = `${range.split("!")[0]}!${startRow}:${endRow}`;
+    const columnCount = result.data.values[0].length;
+    const startColumn = "A";
+    const endColumn = String.fromCharCode("A".charCodeAt(0) + columnCount - 1);
+    const foundRange = `${
+        range.split("!")[0]
+    }!${startColumn}${startRow}:${endColumn}${startRow}`;
     const rowValues = result.data.values[rowIndex];
 
     return { range: foundRange, values: rowValues };
