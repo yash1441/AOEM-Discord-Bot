@@ -24,7 +24,9 @@ module.exports = {
             "CDK!A2:Z"
         );
 
-        console.log(codes);
+        const unusedCodes = codes.filter((row) => !row[1]).map((row) => row[0]);
+
+        console.log(unusedCodes);
 
         const embed = new EmbedBuilder()
             .setTitle("Pioneer Registration")
