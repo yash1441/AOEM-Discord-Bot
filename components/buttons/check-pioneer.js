@@ -90,7 +90,7 @@ module.exports = {
         await Sheets.updateRow(
             process.env.PIONEER_REGISTRATION_SHEET,
             `Registration!H${record.range.split(":")[0].slice(1)}`,
-            unusedCodes[0]
+            [[unusedCodes[0]]]
         );
 
         embed.setDescription(
