@@ -1,14 +1,14 @@
-const { Events } = require('discord.js');
-const Sequelize = require('sequelize');
-require('dotenv').config();
+const { Events } = require("discord.js");
+const Sequelize = require("sequelize");
+require("dotenv").config();
 
 const sequelize1 = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'db/invites.sqlite',
+    dialect: "sqlite",
+    storage: "db/invites.sqlite",
     logging: false,
 });
 
-const Invites = sequelize1.define('invites', {
+const Invites = sequelize1.define("invites", {
     code: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -36,12 +36,12 @@ const Invites = sequelize1.define('invites', {
 });
 
 const sequelize2 = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'db/members.sqlite',
+    dialect: "sqlite",
+    storage: "db/members.sqlite",
     logging: false,
 });
 
-const Members = sequelize2.define('members', {
+const Members = sequelize2.define("members", {
     user_id: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -50,7 +50,7 @@ const Members = sequelize2.define('members', {
     code: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: '-',
+        defaultValue: "-",
     },
     guild_id: {
         type: Sequelize.STRING,
@@ -63,35 +63,60 @@ module.exports = {
     name: Events.GuildMemberAdd,
     async execute(member) {
         const memberId = member.user.id;
-        const logChannel = member.client.channels.cache.get(process.env.USER_LOG_CHANNEL);
-        
-        if (member.user.bot) return logChannel.send(memberId + ' joined via bot invite.');
+        const logChannel = member.client.channels.cache.get(
+            process.env.USER_LOG_CHANNEL
+        );
 
-        const existingMember = await Members.findOne({ where: { user_id: memberId } });
-        if (existingMember) return logChannel.send(memberId + ' joined the server again.');
+        if (member.user.bot)
+            return logChannel.send(memberId + " joined via bot invite.");
 
-        const newInvitesData = await member.guild.invites.fetch({ cache: false }).catch(console.error);
+        const existingMember = await Members.findOne({
+            where: { user_id: memberId },
+        });
+        if (existingMember)
+            return logChannel.send(memberId + " joined the server again.");
+
+        const newInvitesData = await member.guild.invites
+            .fetch({ cache: false })
+            .catch(console.error);
         const newInvitesMap = {};
         for (const [code, invite] of newInvitesData) {
             const { inviterId, uses } = invite;
             newInvitesMap[code] = { user_id: inviterId, uses };
         }
 
-        const totalInvites = await member.client.invites.get(process.env.GUILD_ID);
-        const usedInvite = newInvitesData.find(inv => totalInvites.find(i => i.code === inv.code).uses < inv.uses) || null;
+        const totalInvites = await member.client.invites.get(
+            process.env.GUILD_ID
+        );
+        const usedInvite =
+            newInvitesData.find((inv) => {
+                const totalInvite = totalInvites.find(
+                    (i) => i.code === inv.code
+                );
+                return totalInvite && totalInvite.uses < inv.uses;
+            }) || null;
 
         if (!usedInvite) {
-            return logChannel.send(memberId + ' joined the server through unknown means.');
+            return logChannel.send(
+                memberId + " joined the server through unknown means."
+            );
         }
 
-        logChannel.send(memberId + ' joined using ', usedInvite.code);
+        logChannel.send(memberId + " joined using ", usedInvite.code);
         await Members.create({ user_id: memberId, code: usedInvite.code });
-        await Invites.increment({ 'uses': 1, 'total_uses': 1 }, { where: { code: usedInvite.code } });
+        await Invites.increment(
+            { uses: 1, total_uses: 1 },
+            { where: { code: usedInvite.code } }
+        );
 
         const currentInvites = new Array();
-		for (const [code, invite] of newInvitesData) {
-			currentInvites.push({ code: code, uses: invite.uses, inviter: invite.inviter });
-		}
-		await member.client.invites.set(process.env.GUILD_ID, currentInvites); 
-    }
+        for (const [code, invite] of newInvitesData) {
+            currentInvites.push({
+                code: code,
+                uses: invite.uses,
+                inviter: invite.inviter,
+            });
+        }
+        await member.client.invites.set(process.env.GUILD_ID, currentInvites);
+    },
 };
