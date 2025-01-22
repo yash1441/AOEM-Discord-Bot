@@ -91,7 +91,7 @@ module.exports = {
 			process.env.PIONEER_REGISTRATION_SHEET,
 			"Registration!H" +
 				record.range.slice(-1) +
-				":H" +
+				":I" +
 				record.range.slice(-1),
 			[[unusedCodes[0]]]
 		);
