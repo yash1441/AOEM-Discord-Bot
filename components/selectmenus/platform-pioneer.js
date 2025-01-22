@@ -4,7 +4,6 @@ const {
 	TextInputBuilder,
 	TextInputStyle,
 	MessageFlags,
-	inlineCode,
 } = require("discord.js");
 const date = require("date-and-time");
 const Sheets = require("../../utils/sheets");
@@ -70,7 +69,12 @@ module.exports = {
 	},
 };
 
-async function findOrCreateRegistration(interaction, governorId, email, platform) {
+async function findOrCreateRegistration(
+	interaction,
+	governorId,
+	email,
+	platform
+) {
 	await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
 	const roles = interaction.member.roles.cache
@@ -91,7 +95,7 @@ async function findOrCreateRegistration(interaction, governorId, email, platform
 				governorId,
 				roles,
 				date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
-                email,
+				email,
 				"FALSE",
 				platform,
 			],
