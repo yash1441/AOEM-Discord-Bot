@@ -44,12 +44,12 @@ module.exports = {
                 },
                 {
                     name: "Platform",
-                    value: record.values[6],
+                    value: record.values[7],
                     inline: true,
                 }
             );
 
-        if (record.values[5] === "FALSE") {
+        if (record.values[6] === "FALSE") {
             embed.setDescription(
                 "Sorry! You were not selected. Please try again next time."
             );
@@ -61,7 +61,7 @@ module.exports = {
         if (record.values.length > 7) {
             embed.setDescription(
                 "Congratulations! You are selected for pioneer server. Your CD Key is " +
-                    inlineCode(record.values[7]) +
+                    inlineCode(record.values[8]) +
                     "."
             );
             return await interaction.editReply({

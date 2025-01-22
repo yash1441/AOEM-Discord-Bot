@@ -1,95 +1,110 @@
 const {
-    ActionRowBuilder,
-    ModalBuilder,
-    TextInputBuilder,
-    TextInputStyle,
-    MessageFlags,
-    inlineCode,
+	ActionRowBuilder,
+	ModalBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+	MessageFlags,
+	inlineCode,
 } = require("discord.js");
 const date = require("date-and-time");
 const Sheets = require("../../utils/sheets");
 require("dotenv").config();
 
 module.exports = {
-    cooldown: 10,
-    data: {
-        name: "platform-pioneer",
-    },
-    async execute(interaction) {
-        const platform = interaction.values[0];
+	cooldown: 10,
+	data: {
+		name: "platform-pioneer",
+	},
+	async execute(interaction) {
+		const platform = interaction.values[0];
 
-        const modal = new ModalBuilder()
-            .setCustomId("register-pioneer-modal")
-            .setTitle("Pioneer Server Registration");
+		const modal = new ModalBuilder()
+			.setCustomId("register-pioneer-modal")
+			.setTitle("Pioneer Server Registration");
 
-        const governorIdInput = new TextInputBuilder()
-            .setCustomId("governor-id")
-            .setLabel("Governor ID")
-            .setStyle(TextInputStyle.Short)
-            .setRequired(true);
+		const governorIdInput = new TextInputBuilder()
+			.setCustomId("governor-id")
+			.setLabel("Governor ID")
+			.setStyle(TextInputStyle.Short)
+			.setRequired(true);
 
-        const modalRow = new ActionRowBuilder().addComponents(governorIdInput);
+		const emailInput = new TextInputBuilder()
+			.setCustomId("email")
+			.setLabel("Email")
+			.setStyle(TextInputStyle.Short)
+			.setRequired(true);
 
-        modal.addComponents(modalRow);
+		const firstRow = new ActionRowBuilder().addComponents(governorIdInput);
+		const secondRow = new ActionRowBuilder().addComponents(emailInput);
 
-        await interaction.showModal(modal);
+		if (platform === "iOS") {
+			modal.addComponents(firstRow, secondRow);
+		} else modal.addComponents(firstRow);
 
-        await interaction
-            .awaitModalSubmit({ time: 60_000 })
-            .then((modalInteraction) => {
-                const governorId =
-                    modalInteraction.fields.getTextInputValue("governor-id");
+		await interaction.showModal(modal);
 
-                findOrCreateRegistration(
-                    modalInteraction,
-                    governorId,
-                    platform
-                );
-            })
-            .catch((e) => {
-                interaction.editReply({
-                    content:
-                        "You did not submit the modal in time. Please try again.",
-                    components: [],
-                });
-            });
-    },
+		await interaction
+			.awaitModalSubmit({ time: 60_000 })
+			.then((modalInteraction) => {
+				const governorId =
+					modalInteraction.fields.getTextInputValue("governor-id");
+				let email = "";
+
+				if (platform === "iOS")
+					email = modalInteraction.fields.getTextInputValue("email");
+
+				findOrCreateRegistration(
+					modalInteraction,
+					governorId,
+					email,
+					platform
+				);
+			})
+			.catch((e) => {
+				interaction.editReply({
+					content:
+						"You did not submit the modal in time. Please try again.",
+					components: [],
+				});
+			});
+	},
 };
 
-async function findOrCreateRegistration(interaction, governorId, platform) {
-    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+async function findOrCreateRegistration(interaction, governorId, email, platform) {
+	await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-    const roles = interaction.member.roles.cache
-        .filter((role) => role.name !== "@everyone")
-        .map((role) => role.name)
-        .join(", ");
+	const roles = interaction.member.roles.cache
+		.filter((role) => role.name !== "@everyone")
+		.map((role) => role.name)
+		.join(", ");
 
-    const now = new Date();
+	const now = new Date();
 
-    const [found, created] = await Sheets.findOrAppend(
-        process.env.PIONEER_REGISTRATION_SHEET,
-        "Registration!A2:Z",
-        interaction.user.id,
-        [
-            [
-                interaction.user.id,
-                interaction.user.username,
-                governorId,
-                roles,
-                date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
-                "FALSE",
-                platform,
-            ],
-        ]
-    );
+	const [found, created] = await Sheets.findOrAppend(
+		process.env.PIONEER_REGISTRATION_SHEET,
+		"Registration!A2:Z",
+		interaction.user.id,
+		[
+			[
+				interaction.user.id,
+				interaction.user.username,
+				governorId,
+				roles,
+				date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
+                email,
+				"FALSE",
+				platform,
+			],
+		]
+	);
 
-    if (found) {
-        return await interaction.editReply({
-            content: "You have already registered!",
-        });
-    }
+	if (found) {
+		return await interaction.editReply({
+			content: "You have already registered!",
+		});
+	}
 
-    await interaction.editReply({
-        content: "Registered successfully!",
-    });
+	await interaction.editReply({
+		content: "Registered successfully!",
+	});
 }
