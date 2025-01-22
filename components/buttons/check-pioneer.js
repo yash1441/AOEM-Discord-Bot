@@ -89,7 +89,7 @@ module.exports = {
 
 		await Sheets.updateRow(
 			process.env.PIONEER_REGISTRATION_SHEET,
-			"Registration!H" +
+			"Registration!I" +
 				record.range.slice(-1) +
 				":I" +
 				record.range.slice(-1),
