@@ -27,7 +27,6 @@ module.exports = {
 		const embed = new EmbedBuilder()
 			.setTitle("1.4 Version Pioneer Server Recruitment is now open!")
 			.setColor("White")
-			.setDescription("Register for Pioneer server.")
 			.addFields(
 				{
 					name: "Registration Period: 2.2 - 2.4, 23:59 (UTC)",
