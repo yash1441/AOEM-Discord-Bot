@@ -56,7 +56,8 @@ module.exports = {
 					modalInteraction,
 					governorId,
 					email,
-					platform
+					platform,
+					interaction
 				);
 			})
 			.catch((e) => {
@@ -73,9 +74,18 @@ async function findOrCreateRegistration(
 	interaction,
 	governorId,
 	email,
-	platform
+	platform,
+	mainInteraction
 ) {
-	await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+	try {
+		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+	} catch (e) {
+		console.log(interaction);
+		return mainInteraction.editReply({
+			content: "There was an error. Please try again.",
+			components: [],
+		});
+	}
 
 	const roles = interaction.member.roles.cache
 		.filter((role) => role.name !== "@everyone")
