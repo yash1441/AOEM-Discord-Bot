@@ -19,6 +19,8 @@ module.exports = {
 		if (record === null)
 			return await interaction.editReply("You are not registered.");
 
+		console.log(record);
+
 		const embed = new EmbedBuilder()
 			.setTitle("Pioneer Registration")
 			.setColor("White")
