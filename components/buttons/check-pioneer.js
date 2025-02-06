@@ -1,4 +1,4 @@
-const { EmbedBuilder, MessageFlags, inlineCode } = require("discord.js");
+const { EmbedBuilder, MessageFlags, inlineCode, bold } = require("discord.js");
 const Sheets = require("../../utils/sheets");
 require("dotenv").config();
 
@@ -18,8 +18,6 @@ module.exports = {
 
 		if (record === null)
 			return await interaction.editReply("You are not registered.");
-
-		console.log(record);
 
 		const embed = new EmbedBuilder()
 			.setTitle("Pioneer Registration")
