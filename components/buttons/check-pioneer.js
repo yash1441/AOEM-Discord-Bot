@@ -1,9 +1,4 @@
-const {
-	EmbedBuilder,
-	MessageFlags,
-	inlineCode,
-	italic,
-} = require("discord.js");
+const { EmbedBuilder, MessageFlags, inlineCode } = require("discord.js");
 const Sheets = require("../../utils/sheets");
 require("dotenv").config();
 
