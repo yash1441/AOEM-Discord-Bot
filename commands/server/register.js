@@ -25,26 +25,28 @@ module.exports = {
 		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
 		const embed = new EmbedBuilder()
-			.setTitle("1.4 Version Pioneer Server Recruitment is now open!")
+			.setTitle("Pioneer Server Recruitment is now open!")
 			.setColor("White")
 			.addFields(
 				{
-					name: "Registration Period: 2.2 - 2.4, 23:59 (UTC)",
-					value: "Click the sign-up button to fill in the necessary information and complete your registration. Please note that each Discord account can only register once, so please fill in your details carefully.",
+					name: "Registration Period: 4.3 - 4.7, 23:59 (UTC)",
+					value:
+						"Click the sign-up button to fill in the necessary information and complete your registration. Please note that each Discord account can only register once, so please fill in your details carefully.",
 					inline: false,
 				},
 				{
-					name: "Qualification Distribution: 2.5 - 2.7",
-					value: 'During the qualification distribution period, click on the "Check" button to view your registration results. If you are selected, the Bot will send you a CDK to join the Pioneer Server.',
+					name: "Qualification Distribution: 4.7 - 4.9",
+					value:
+						'During the qualification distribution period, click on the "Check" button to view your registration results. If you are selected, the Bot will send you a CDK to join the Pioneer Server.',
 					inline: false,
 				},
 				{
-					name: "Pioneer Server Testing Period: 2.7 - 2.16",
+					name: "Pioneer Server Testing Period: 4.9 - 4.16",
 					value: "\u200b",
 					inline: false,
 				}
 			)
-			.setImage("https://i.ibb.co/LQr54Zy/image.png")
+			.setImage("https://i.ibb.co/WvR3cf4p/image.png")
 			.setFooter({
 				text: "Age of Empires Mobile",
 				iconURL: "https://i.ibb.co/Fm4fttV/Logo.png",
