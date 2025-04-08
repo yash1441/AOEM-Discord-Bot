@@ -64,7 +64,7 @@ module.exports = {
 					inlineCode(record.values[8]) +
 					". Wish you a pleasant gaming experience!\n" +
 					bold("Note:") +
-					"\n1. If you chose the IOS system when registering, please pay attention to the email you submitted during registration. We will send you a Test Flight test invitation to your email within one day. You need to download the game from Test Flight and join the test.\n2. If you chose the Android system when registering, please click on the link below to download the Apk package and participate in the test. We recommend that you use an emulator to play to avoid affecting the progress of your account on the official server. Link: https://download.aoemobile.com/apk/AOEM_And_D_v1.4.102.102_AOEM_T2_Pioneer.apk\n3. In order to optimize the testing experience for the Governors, this test adopts the method of prefabricated characters. Due to the large amount of prefabricated character data, Governors are required to download over 3 Gb game resources when entering the game for the first time. Please wait patiently before the data loading is done."
+					"\n1. If you chose the IOS system when registering, please pay attention to the email you submitted during registration. We will send you a Test Flight test invitation to your email within one day. You need to download the game from Test Flight and join the test.\n2. If you chose the Android system when registering, please click on the link below to download the Apk package and participate in the test. We recommend that you use an emulator to play to avoid affecting the progress of your account on the official server. Link: https://download.aoemobile.com/apk/AOEM_And_D_v1.5.110.109_AOEM_T3_Pioneer.apk\n3. In order to optimize the testing experience for the Governors, this test adopts the method of prefabricated characters. Due to the large amount of prefabricated character data, Governors are required to download over 3 Gb game resources when entering the game for the first time. Please wait patiently before the data loading is done."
 			);
 			return await interaction.editReply({
 				embeds: [embed],
@@ -83,18 +83,13 @@ module.exports = {
 		const codeIndex = codes.findIndex((row) => row[0] === unusedCodes[0]);
 		const codeRange = `CDK!A${codeIndex + 2}:C${codeIndex + 2}`;
 
-		await Sheets.updateRow(
-			process.env.PIONEER_REGISTRATION_SHEET,
-			codeRange,
-			[[unusedCodes[0], interaction.user.id, interaction.user.username]]
-		);
+		await Sheets.updateRow(process.env.PIONEER_REGISTRATION_SHEET, codeRange, [
+			[unusedCodes[0], interaction.user.id, interaction.user.username],
+		]);
 
 		await Sheets.updateRow(
 			process.env.PIONEER_REGISTRATION_SHEET,
-			"Registration!I" +
-				record.range.slice(-1) +
-				":I" +
-				record.range.slice(-1),
+			"Registration!I" + record.range.slice(-1) + ":I" + record.range.slice(-1),
 			[[unusedCodes[0]]]
 		);
 
