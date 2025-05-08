@@ -185,18 +185,19 @@ module.exports = {
 		} else {
 			userData.screenshotFunction = "-";
 		}
-
-		const channel = interaction.client.channels.cache.get(
-			process.env.SUGGESTION_CHANNEL
-		);
-		const message = await channel.send({ embeds: [embed] });
-		await message.react("✅").then(message.react("❌"));
+		if (interaction.channel.parentId != "1366682576223207424") {
+			const channel = interaction.client.channels.cache.get(
+				process.env.SUGGESTION_CHANNEL
+			);
+			const message = await channel.send({ embeds: [embed] });
+			await message.react("✅").then(message.react("❌"));
+		}
 
 		const now = new Date();
 
 		await Sheets.appendRow(
 			process.env.FEEDBACK_SHEET,
-			interaction.channel.id === "1366682576223207424"
+			interaction.channel.parentId === "1366682576223207424"
 				? "Focus Group Suggestions!A2:Z"
 				: "Suggestion!A2:Z",
 			[
