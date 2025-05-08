@@ -185,13 +185,18 @@ module.exports = {
 		} else {
 			userData.screenshotFunction = "-";
 		}
-		if (interaction.channel.parentId != "1366682576223207424") {
-			const channel = interaction.client.channels.cache.get(
-				process.env.SUGGESTION_CHANNEL
-			);
-			const message = await channel.send({ embeds: [embed] });
-			await message.react("✅").then(message.react("❌"));
-		}
+
+		const channelId =
+			interaction.channel.parentId === "1366682576223207424"
+				? process.env.FOCUS_SUGGESTION_CHANNEL
+				: process.env.SUGGESTION_CHANNEL;
+
+		const channel = interaction.client.channels.cache.get(channelId);
+		if (!channel) throw new Error("Channel not found");
+
+		const message = await channel.send({ embeds: [embed] });
+		await message.react("✅");
+		await message.react("❌");
 
 		const now = new Date();
 
