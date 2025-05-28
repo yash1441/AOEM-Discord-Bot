@@ -29,24 +29,24 @@ module.exports = {
 			.setColor("White")
 			.addFields(
 				{
-					name: "Registration Period: 4.3 - 4.7, 23:59 (UTC)",
+					name: "Registration Period: 5.27 - 5.30, 23:59 (UTC)",
 					value:
 						"Click the sign-up button to fill in the necessary information and complete your registration. Please note that each Discord account can only register once, so please fill in your details carefully.",
 					inline: false,
 				},
 				{
-					name: "Qualification Distribution: 4.7 - 4.9",
+					name: "Qualification Distribution: 5.31 - 6.2",
 					value:
 						'During the qualification distribution period, click on the "Check" button to view your registration results. If you are selected, the Bot will send you a CDK to join the Pioneer Server.',
 					inline: false,
 				},
 				{
-					name: "Pioneer Server Testing Period: 4.9 - 4.16",
+					name: "Pioneer Server Testing Period: 6.3 - 6.9",
 					value: "\u200b",
 					inline: false,
 				}
 			)
-			.setImage("https://i.ibb.co/WvR3cf4p/image.png")
+			.setImage("https://i.ibb.co/rK9pvvV0/image-2025-05-28-092250234.png")
 			.setFooter({
 				text: "Age of Empires Mobile",
 				iconURL: "https://i.ibb.co/Fm4fttV/Logo.png",
