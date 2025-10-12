@@ -1,5 +1,5 @@
-const { Events, ActivityType } = require('discord.js');
-require('dotenv').config();
+const { Events, ActivityType } = require("discord.js");
+require("dotenv").config();
 
 module.exports = {
 	name: Events.ClientReady,
@@ -9,21 +9,23 @@ module.exports = {
 		client.user.setPresence({
 			activities: [
 				{
-					name: 'Age of Empires Mobile',
+					name: "Age of Empires Mobile",
 					type: ActivityType.Custom,
-					state: "Age of Empires Mobile"
+					state: "Age of Empires Mobile",
 				},
 			],
-			status: 'online'
+			status: "online",
 		});
 
 		const guild = await client.guilds.fetch(process.env.GUILD_ID);
-		const invitesData = await guild.invites.fetch({ cache: false }).catch(console.error);
+		const invitesData = await guild.invites
+			.fetch({ cache: false })
+			.catch(console.error);
 		const invites = new Array();
 		for (const [code, invite] of invitesData) {
 			invites.push({ code: code, uses: invite.uses, inviter: invite.inviter });
 		}
 
-		await client.invites.set(process.env.GUILD_ID, invites); 
+		await client.invites.set(process.env.GUILD_ID, invites);
 	},
 };
