@@ -7,7 +7,7 @@ const Sheets = require("../../utils/sheets");
 require("dotenv").config();
 
 module.exports = {
-	cooldown: 10,
+	cooldown: 0,
 	category: "utility",
 	data: new SlashCommandBuilder()
 		.setName("giveaway")
