@@ -12,7 +12,7 @@ module.exports = {
 		const record = await Sheets.findRow(
 			process.env.FEEDBACK_SHEET,
 			"Giveaway!A2:Z",
-			interaction.user.id
+			message.author.id
 		);
 
 		if (record != null) return;
