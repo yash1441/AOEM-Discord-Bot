@@ -26,5 +26,9 @@ module.exports = {
 				date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
 			],
 		]);
+
+		await message.reply({
+			content: "You have been entered into the giveaway!",
+		});
 	},
 };
