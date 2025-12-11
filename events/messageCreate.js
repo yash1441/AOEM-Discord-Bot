@@ -20,9 +20,11 @@ module.exports = {
 		const now = new Date();
 
 		await Sheets.appendRow(process.env.FEEDBACK_SHEET, "Giveaway!A2:Z", [
-			message.author.id,
-			message.author.username,
-			date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
+			[
+				message.author.id,
+				message.author.username,
+				date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
+			],
 		]);
 	},
 };
