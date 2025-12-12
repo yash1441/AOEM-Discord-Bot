@@ -48,12 +48,9 @@ module.exports = {
 			while (winners.length < Math.min(numberOfWinners, entries.length)) {
 				const randomIndex = Math.floor(Math.random() * entries.length);
 
-				console.log(randomIndex);
-
 				if (!usedIndices.has(randomIndex)) {
 					usedIndices.add(randomIndex);
 					winners.push(entries[randomIndex]);
-					console.log(entries[randomIndex]);
 				}
 			}
 
