@@ -26,7 +26,7 @@ module.exports = {
 					"Please use the phrase below in " +
 					channelMention("1303057362780815472") +
 					" to join the giveaway:\n" +
-					codeBlock("AOEM is the best game"),
+					codeBlock("AoEM Entering the Miracle Age"),
 			});
 	},
 };
