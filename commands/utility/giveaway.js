@@ -1,8 +1,4 @@
-const {
-	SlashCommandBuilder,
-	MessageFlags,
-	PermissionFlagsBits,
-} = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const Sheets = require("../../utils/sheets");
 require("dotenv").config();
 
@@ -26,9 +22,7 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 	async execute(interaction) {
-		await interaction.deferReply({
-			flags: MessageFlags.Ephemeral,
-		});
+		await interaction.deferReply({});
 
 		const subcommand = interaction.options.getSubcommand();
 		if (subcommand === "winner") {
