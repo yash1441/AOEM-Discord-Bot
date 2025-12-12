@@ -7,7 +7,10 @@ module.exports = {
 	name: Events.MessageCreate,
 	async execute(message) {
 		if (message.channelId != "1303057362780815472") return;
-		if (message.content.toLowerCase() != "New Age, New Battle".toLowerCase())
+		if (
+			message.content.toLowerCase() !=
+			"Celebrate the Miracle Age together! Exciting welfare events will begin tomorrow!".toLowerCase()
+		)
 			return;
 
 		const record = await Sheets.findRow(

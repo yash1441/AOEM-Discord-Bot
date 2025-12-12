@@ -26,7 +26,9 @@ module.exports = {
 					"Please use the phrase below in " +
 					channelMention("1303057362780815472") +
 					" to join the giveaway:\n" +
-					codeBlock("New Age, New Battle"),
+					codeBlock(
+						"Celebrate the Miracle Age together! Exciting welfare events will begin tomorrow!"
+					),
 			});
 	},
 };
