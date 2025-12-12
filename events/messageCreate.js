@@ -7,7 +7,8 @@ module.exports = {
 	name: Events.MessageCreate,
 	async execute(message) {
 		if (message.channelId != "1303057362780815472") return;
-		if (message.content.toLowerCase() != "aoem is the best game") return;
+		if (message.content.toLowerCase() != "aoem entering the miracle age")
+			return;
 
 		const record = await Sheets.findRow(
 			process.env.FEEDBACK_SHEET,
