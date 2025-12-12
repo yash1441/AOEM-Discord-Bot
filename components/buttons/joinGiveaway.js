@@ -24,7 +24,7 @@ module.exports = {
 			return await interaction.editReply({
 				content:
 					"Please use the phrase below in " +
-					channelMention("1303057362780815472") +
+					channelMention("1024167955677839431") +
 					" to join the giveaway:\n" +
 					codeBlock(
 						"Celebrate the Miracle Age together! Exciting welfare events will begin tomorrow!"
