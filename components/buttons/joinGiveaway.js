@@ -17,6 +17,7 @@ module.exports = {
 		if (record != null)
 			return await interaction.reply({
 				content: "You have already entered the giveaway.",
+				flags: MessageFlags.Ephemeral,
 			});
 		else
 			return await interaction.reply({
@@ -27,6 +28,7 @@ module.exports = {
 					codeBlock(
 						"Celebrate the Miracle Age together! Exciting welfare events are on the way!"
 					),
+				flags: MessageFlags.Ephemeral,
 			});
 	},
 };
