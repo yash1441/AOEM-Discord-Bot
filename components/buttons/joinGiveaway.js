@@ -26,7 +26,7 @@ module.exports = {
 					channelMention("1024167955677839431") +
 					" to join the giveaway:\n" +
 					codeBlock(
-						"Celebrate the Miracle Age together! Exciting welfare events are on the way!"
+						"Celebrate the Miracle Age together! The Hero Reset event is now live!"
 					),
 			});
 	},

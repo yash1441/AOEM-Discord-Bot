@@ -6,11 +6,10 @@ require("dotenv").config();
 module.exports = {
 	name: Events.MessageCreate,
 	async execute(message) {
-		return;
 		if (message.channelId != "1024167955677839431") return;
 		if (
 			message.content.toLowerCase() !=
-			"Celebrate the Miracle Age together! Exciting welfare events are on the way!".toLowerCase()
+			"Celebrate the Miracle Age together! The Hero Reset event is now live!".toLowerCase()
 		)
 			return;
 
