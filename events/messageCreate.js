@@ -9,7 +9,7 @@ module.exports = {
 		if (message.channelId != "1024167955677839431") return;
 		if (
 			message.content.toLowerCase() !=
-			"Celebrate the Miracle Age together! The Hero Reset event is now live!".toLowerCase()
+			"Log in to the game daily and claim your New Year Blessing for free!".toLowerCase()
 		)
 			return;
 
