@@ -1,4 +1,4 @@
-const { Events } = require("discord.js");
+const { Events, messageLink } = require("discord.js");
 const date = require("date-and-time");
 const Sheets = require("../utils/sheets");
 require("dotenv").config();
@@ -32,7 +32,8 @@ module.exports = {
 		]);
 
 		await message.reply({
-			content: "You have been entered into the giveaway!",
+			content:
+				"You have been entered into the giveaway!\nhttps://discord.com/channels/869531427287474197/1024167955677839431/1455509910061191279",
 		});
 	},
 };
