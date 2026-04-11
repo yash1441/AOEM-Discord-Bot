@@ -10,6 +10,9 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
+		const gameLink =
+			"https://download.aoemobile.com/apk/AOEM_And_D_v1.11.102.4_AOEM_T9_Pioneer.apk";
+
 		const record = await Sheets.findRow(
 			process.env.PIONEER_REGISTRATION_SHEET,
 			"Registration!A2:Z",
@@ -64,7 +67,9 @@ module.exports = {
 					inlineCode(record.values[8]) +
 					". Wish you a pleasant gaming experience!\n" +
 					bold("Note:") +
-					"\n1. If you chose the IOS system when registering, please pay attention to the email you submitted during registration. We will send you a Test Flight test invitation to your email within one day. You need to download the game from Test Flight and join the test.\n2. If you chose the Android system when registering, please click on the link below to download the Apk package and participate in the test. We recommend that you use an emulator to play to avoid affecting the progress of your account on the official server. Link: https://download.aoemobile.com/apk/AOEM_And_D_v1.10.30.2_AOEM_T8_Pioneer.apk\n3. In order to optimize the testing experience for the Governors, this test adopts the method of prefabricated characters. Due to the large amount of prefabricated character data, Governors are required to download over 3 Gb game resources when entering the game for the first time. Please wait patiently before the data loading is done.",
+					"\n1. If you chose the IOS system when registering, please pay attention to the email you submitted during registration. We will send you a Test Flight test invitation to your email within one day. You need to download the game from Test Flight and join the test.\n2. If you chose the Android system when registering, please click on the link below to download the Apk package and participate in the test. We recommend that you use an emulator to play to avoid affecting the progress of your account on the official server. Link: " +
+					gameLink +
+					"\n3. In order to optimize the testing experience for the Governors, this test adopts the method of prefabricated characters. Due to the large amount of prefabricated character data, Governors are required to download over 3 Gb game resources when entering the game for the first time. Please wait patiently before the data loading is done.",
 			);
 			return await interaction.editReply({
 				embeds: [embed],
@@ -98,7 +103,9 @@ module.exports = {
 				inlineCode(unusedCodes[0]) +
 				". Wish you a pleasant gaming experience!\n" +
 				bold("Note:") +
-				"\n1. If you chose the IOS system when registering, please pay attention to the email you submitted during registration. We will send you a Test Flight test invitation to your email within one day. You need to download the game from Test Flight and join the test.\n2. If you chose the Android system when registering, please click on the link below to download the Apk package and participate in the test. We recommend that you use an emulator to play to avoid affecting the progress of your account on the official server. Link: https://download.aoemobile.com/apk/AOEM_And_D_v1.8.200.200_AOEM_T6_Pioneer.apk\n3. In order to optimize the testing experience for the Governors, this test adopts the method of prefabricated characters. Due to the large amount of prefabricated character data, Governors are required to download over 3 Gb game resources when entering the game for the first time. Please wait patiently before the data loading is done.",
+				"\n1. If you chose the IOS system when registering, please pay attention to the email you submitted during registration. We will send you a Test Flight test invitation to your email within one day. You need to download the game from Test Flight and join the test.\n2. If you chose the Android system when registering, please click on the link below to download the Apk package and participate in the test. We recommend that you use an emulator to play to avoid affecting the progress of your account on the official server. Link: " +
+				gameLink +
+				"\n3. In order to optimize the testing experience for the Governors, this test adopts the method of prefabricated characters. Due to the large amount of prefabricated character data, Governors are required to download over 3 Gb game resources when entering the game for the first time. Please wait patiently before the data loading is done.",
 		);
 
 		await interaction.editReply({
