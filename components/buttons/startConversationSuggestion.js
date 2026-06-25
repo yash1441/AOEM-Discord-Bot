@@ -1,6 +1,9 @@
 const {
 	EmbedBuilder,
 	ActionRowBuilder,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	ComponentType,
 	inlineCode,
 	bold,
 	italic,
@@ -19,7 +22,7 @@ module.exports = {
 	},
 	async execute(interaction) {
 		const endConversation = new ActionRowBuilder().addComponents(
-			interaction.message.components[0].components[1]
+			interaction.message.components[0].components[1],
 		);
 		const thread = interaction.channel;
 		await interaction.update({ components: [endConversation] });
@@ -57,7 +60,7 @@ module.exports = {
 			await thread
 				.send({
 					content: bold(
-						"You did not provide your Governor ID in time. This thread will be deleted."
+						"You did not provide your Governor ID in time. This thread will be deleted.",
 					),
 				})
 				.catch();
@@ -70,8 +73,8 @@ module.exports = {
 		await thread.send({
 			content: blockQuote(
 				bold(
-					"Please give a detailed description of your feedback and suggestion, preferably with a screenshot to help us quickly locate the features or systems in your description."
-				)
+					"Please give a detailed description of your feedback and suggestion, preferably with a screenshot to help us quickly locate the features or systems in your description.",
+				),
 			),
 		});
 
@@ -104,7 +107,68 @@ module.exports = {
 			await thread
 				.send({
 					content: bold(
-						"You did not provide detailed description in time. This thread will be deleted."
+						"You did not provide detailed description in time. This thread will be deleted.",
+					),
+				})
+				.catch();
+			setTimeout(function () {
+				thread.delete().catch();
+			}, 2_000);
+			return;
+		}
+
+		const platformSelect = new StringSelectMenuBuilder()
+			.setCustomId("suggestion-platform")
+			.setPlaceholder("Select your platform")
+			.addOptions(
+				{
+					label: "PC Edition",
+					value: "PC Edition",
+					emoji: "🖥️",
+				},
+				{
+					label: "Mobile Version",
+					value: "Mobile Version",
+					emoji: "📱",
+				},
+			);
+
+		const platformRow = new ActionRowBuilder().addComponents(platformSelect);
+
+		const platformPrompt = await thread.send({
+			content: blockQuote(
+				bold(
+					"Which platform are you playing on?\n" +
+						"Please select one of the options below.",
+				),
+			),
+			components: [platformRow],
+		});
+
+		await platformPrompt
+			.awaitMessageComponent({
+				filter: (menuInteraction) =>
+					menuInteraction.user.id === userData.discordId,
+				componentType: ComponentType.StringSelect,
+				time: 3_00_000,
+				errors: ["time"],
+			})
+			.then(async (menuInteraction) => {
+				userData.platform = menuInteraction.values[0];
+				await menuInteraction.update({
+					content: "Platform received. Next question.",
+					components: [],
+				});
+			})
+			.catch(async () => {
+				timedOut = true;
+			});
+
+		if (timedOut) {
+			await thread
+				.send({
+					content: bold(
+						"You did not choose your platform in time. This thread will be deleted.",
 					),
 				})
 				.catch();
@@ -118,8 +182,8 @@ module.exports = {
 			content:
 				blockQuote(
 					bold(
-						"Could you rate the importance of the suggestions you have provided? Reference: 1 star (not important) -5 stars (very important, greatly helpful for improving game experience)\n"
-					)
+						"Could you rate the importance of the suggestions you have provided? Reference: 1 star (not important) -5 stars (very important, greatly helpful for improving game experience)\n",
+					),
 				) + italic("(Only text message can be recorded)"),
 		});
 
@@ -145,7 +209,7 @@ module.exports = {
 			await thread
 				.send({
 					content: bold(
-						"You did not provide rating in time. This thread will be deleted."
+						"You did not provide rating in time. This thread will be deleted.",
 					),
 				})
 				.catch();
@@ -157,7 +221,8 @@ module.exports = {
 
 		if (!userData.governorId) userData.governorId = "-";
 		if (!userData.details) userData.details = "-";
-		if (!userData.timeOfOccurence) userData.rating = "-";
+		if (!userData.platform) userData.platform = "-";
+		if (!userData.rating) userData.rating = "-";
 
 		const embed = new EmbedBuilder()
 			.setTitle("Suggestion")
@@ -168,7 +233,8 @@ module.exports = {
 			.setDescription(bold("Details") + "\n" + userData.details)
 			.addFields(
 				{ name: "Governor ID", value: inlineCode(userData.governorId) },
-				{ name: "Rating", value: userData.rating }
+				{ name: "Platform", value: userData.platform },
+				{ name: "Rating", value: userData.rating },
 			)
 			.setColor("Green")
 			.setTimestamp();
@@ -210,12 +276,13 @@ module.exports = {
 					interaction.user.id,
 					interaction.user.username,
 					userData.governorId,
+					userData.platform,
 					userData.details,
 					userData.rating,
 					date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
 					userData.screenshotFunction,
 				],
-			]
+			],
 		);
 
 		await thread.send({
