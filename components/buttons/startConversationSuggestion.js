@@ -2,7 +2,6 @@ const {
 	EmbedBuilder,
 	ActionRowBuilder,
 	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
 	ComponentType,
 	inlineCode,
 	bold,
@@ -13,216 +12,167 @@ const date = require("date-and-time");
 const Sheets = require("../../utils/sheets");
 const ImgBB = require("../../utils/imgbb");
 
-require("dotenv").config();
-
 module.exports = {
 	cooldown: 10,
 	data: {
 		name: "startConversationSuggestion",
 	},
 	async execute(interaction) {
-		const endConversation = new ActionRowBuilder().addComponents(
-			interaction.message.components[0].components[1],
-		);
 		const thread = interaction.channel;
-		await interaction.update({ components: [endConversation] });
-
-		let timedOut = false;
 		const userData = {
 			discordId: interaction.user.id,
 			discordUsername: interaction.user.username,
+			governorId: "-",
+			details: "-",
+			platform: "-",
+			rating: "-",
+			screenshot: null,
 		};
 
-		const collectorFilter = (m) => interaction.user.id === m.author.id;
+		const collectorFilter = (message) =>
+			message.author.id === userData.discordId;
+		const isFocusGroup = interaction.channel.parentId === "1366682576223207424";
 
-		await thread.send({
-			content:
-				blockQuote(bold("Firstly, please provide your Governor ID.\n")) +
-				italic("(Only text message can be recorded)"),
-		});
-
-		await thread
-			.awaitMessages({
+		const sendAndCollectMessage = async (content, timeout) => {
+			await thread.send({ content });
+			const collected = await thread.awaitMessages({
 				filter: collectorFilter,
-				time: 3_00_000,
+				time: timeout,
 				max: 1,
 				errors: ["time"],
-			})
-			.then((messages) => {
-				userData.governorId = messages.first().content;
-				thread.send({ content: "Received. Next question." });
-			})
-			.catch(() => {
-				timedOut = true;
 			});
+			return collected.first();
+		};
 
-		if (timedOut) {
-			await thread
-				.send({
-					content: bold(
-						"You did not provide your Governor ID in time. This thread will be deleted.",
-					),
-				})
-				.catch();
-			setTimeout(function () {
-				thread.delete().catch();
-			}, 2_000);
-			return;
-		}
+		const deleteThread = async (notice) => {
+			await thread.send({ content: bold(notice) }).catch(() => {});
+			setTimeout(() => thread.delete().catch(() => {}), 2_000);
+		};
 
-		await thread.send({
-			content: blockQuote(
+		const askForGovernorId = async () => {
+			const prompt =
+				blockQuote(bold("Firstly, please provide your Governor ID.\n")) +
+				italic("(Only text message can be recorded)");
+			const message = await sendAndCollectMessage(prompt, 3_00_000);
+			userData.governorId = message.content || "-";
+			await thread.send({ content: "Received. Next question." });
+		};
+
+		const askForDetails = async () => {
+			const prompt = blockQuote(
 				bold(
 					"Please give a detailed description of your feedback and suggestion, preferably with a screenshot to help us quickly locate the features or systems in your description.",
 				),
-			),
-		});
+			);
+			const message = await sendAndCollectMessage(prompt, 9_00_000);
+			userData.details = message.content || "-";
 
-		await thread
-			.awaitMessages({
-				filter: collectorFilter,
-				time: 9_00_000,
-				max: 1,
-				errors: ["time"],
-			})
-			.then((messages) => {
-				userData.details = messages.first().content
-					? messages.first().content
-					: "-";
+			const attachment = message.attachments.first();
+			if (attachment?.contentType?.startsWith("image")) {
+				userData.screenshot = attachment.proxyURL;
+			}
 
-				const attachment = messages.first().attachments.first();
-				if (attachment && attachment.contentType.includes("image"))
-					userData.screenshot = attachment.proxyURL;
+			await thread.send({
+				content:
+					"Thanks a lot for your suggestions. Now, we need collect some basic information.",
+			});
+		};
 
-				thread.send({
-					content:
-						"Thanks a lot for your suggestions. Now, we need collect some basic information.",
-				});
-			})
-			.catch(() => {
-				timedOut = true;
+		const askForPlatform = async () => {
+			const platformSelect = new StringSelectMenuBuilder()
+				.setCustomId("suggestion-platform")
+				.setPlaceholder("Select your platform")
+				.addOptions(
+					{
+						label: "PC Edition",
+						value: "PC Edition",
+						emoji: "🖥️",
+					},
+					{
+						label: "Mobile Version",
+						value: "Mobile Version",
+						emoji: "📱",
+					},
+				);
+
+			const platformPrompt = await thread.send({
+				content: blockQuote(
+					bold(
+						"Which platform are you playing on?\nPlease select one of the options below.",
+					),
+				),
+				components: [new ActionRowBuilder().addComponents(platformSelect)],
 			});
 
-		if (timedOut) {
-			await thread
-				.send({
-					content: bold(
-						"You did not provide detailed description in time. This thread will be deleted.",
-					),
-				})
-				.catch();
-			setTimeout(function () {
-				thread.delete().catch();
-			}, 2_000);
-			return;
-		}
-
-		const platformSelect = new StringSelectMenuBuilder()
-			.setCustomId("suggestion-platform")
-			.setPlaceholder("Select your platform")
-			.addOptions(
-				{
-					label: "PC Edition",
-					value: "PC Edition",
-					emoji: "🖥️",
-				},
-				{
-					label: "Mobile Version",
-					value: "Mobile Version",
-					emoji: "📱",
-				},
-			);
-
-		const platformRow = new ActionRowBuilder().addComponents(platformSelect);
-
-		const platformPrompt = await thread.send({
-			content: blockQuote(
-				bold(
-					"Which platform are you playing on?\n" +
-						"Please select one of the options below.",
-				),
-			),
-			components: [platformRow],
-		});
-
-		await platformPrompt
-			.awaitMessageComponent({
+			const platformInteraction = await platformPrompt.awaitMessageComponent({
 				filter: (menuInteraction) =>
 					menuInteraction.user.id === userData.discordId,
 				componentType: ComponentType.StringSelect,
 				time: 3_00_000,
 				errors: ["time"],
-			})
-			.then(async (menuInteraction) => {
-				userData.platform = menuInteraction.values[0];
-				await menuInteraction.update({
-					content: "Platform received. Next question.",
-					components: [],
-				});
-			})
-			.catch(async () => {
-				timedOut = true;
 			});
 
-		if (timedOut) {
-			await thread
-				.send({
-					content: bold(
-						"You did not choose your platform in time. This thread will be deleted.",
-					),
-				})
-				.catch();
-			setTimeout(function () {
-				thread.delete().catch();
-			}, 2_000);
-			return;
-		}
+			userData.platform = platformInteraction.values[0] || "-";
+			await platformInteraction.update({
+				content: "Platform received. Next question.",
+				components: [],
+			});
+		};
 
-		await thread.send({
-			content:
+		const askForRating = async () => {
+			const prompt =
 				blockQuote(
 					bold(
 						"Could you rate the importance of the suggestions you have provided? Reference: 1 star (not important) -5 stars (very important, greatly helpful for improving game experience)\n",
 					),
-				) + italic("(Only text message can be recorded)"),
+				) + italic("(Only text message can be recorded)");
+			const message = await sendAndCollectMessage(prompt, 3_00_000);
+			userData.rating = message.content || "-";
+			await thread.send({
+				content:
+					"Thanks for your patience. Your feedback is important for improving the quality of the game. If your suggestions are deemed reasonable and effective, the official will provide you a reward in the future.",
+			});
+		};
+
+		await interaction.update({
+			components: [
+				new ActionRowBuilder().addComponents(
+					interaction.message.components[0].components[1],
+				),
+			],
 		});
 
-		await thread
-			.awaitMessages({
-				filter: collectorFilter,
-				time: 3_00_000,
-				max: 1,
-				errors: ["time"],
-			})
-			.then((messages) => {
-				userData.rating = messages.first().content;
-				thread.send({
-					content:
-						"Thanks for your patience. Your feedback is important for improving the quality of the game. If your suggestions are deemed reasonable and effective, the official will provide you a reward in the future.",
-				});
-			})
-			.catch(() => {
-				timedOut = true;
-			});
-
-		if (timedOut) {
-			await thread
-				.send({
-					content: bold(
-						"You did not provide rating in time. This thread will be deleted.",
-					),
-				})
-				.catch();
-			setTimeout(function () {
-				thread.delete().catch();
-			}, 2_000);
-			return;
+		try {
+			await askForGovernorId();
+		} catch {
+			return deleteThread(
+				"You did not provide your Governor ID in time. This thread will be deleted.",
+			);
 		}
 
-		if (!userData.governorId) userData.governorId = "-";
-		if (!userData.details) userData.details = "-";
-		if (!userData.platform) userData.platform = "-";
-		if (!userData.rating) userData.rating = "-";
+		try {
+			await askForDetails();
+		} catch {
+			return deleteThread(
+				"You did not provide detailed description in time. This thread will be deleted.",
+			);
+		}
+
+		try {
+			await askForPlatform();
+		} catch {
+			return deleteThread(
+				"You did not choose your platform in time. This thread will be deleted.",
+			);
+		}
+
+		try {
+			await askForRating();
+		} catch {
+			return deleteThread(
+				"You did not provide rating in time. This thread will be deleted.",
+			);
+		}
 
 		const embed = new EmbedBuilder()
 			.setTitle("Suggestion")
@@ -241,56 +191,40 @@ module.exports = {
 
 		if (userData.screenshot) {
 			userData.screenshotUrl = await ImgBB(userData.screenshot);
-			userData.screenshotFunction =
-				'=HYPERLINK("' +
-				userData.screenshotUrl +
-				'", IMAGE("' +
-				userData.screenshotUrl +
-				'", 1))';
+			userData.screenshotFunction = `=HYPERLINK("${userData.screenshotUrl}", IMAGE("${userData.screenshotUrl}", 1))`;
 			embed.setImage(userData.screenshotUrl);
 		} else {
 			userData.screenshotFunction = "-";
 		}
 
-		const channelId =
-			interaction.channel.parentId === "1366682576223207424"
-				? process.env.FOCUS_SUGGESTION_CHANNEL
-				: process.env.SUGGESTION_CHANNEL;
-
+		const channelId = isFocusGroup
+			? process.env.FOCUS_SUGGESTION_CHANNEL
+			: process.env.SUGGESTION_CHANNEL;
+		const sheetRange = isFocusGroup
+			? "Focus Group Suggestions!A2:Z"
+			: "Suggestion!A2:Z";
 		const channel = interaction.client.channels.cache.get(channelId);
 		if (!channel) throw new Error("Channel not found");
 
 		const message = await channel.send({ embeds: [embed] });
-		await message.react("✅");
-		await message.react("❌");
+		await Promise.all([message.react("✅"), message.react("❌")]);
 
-		const now = new Date();
-
-		await Sheets.appendRow(
-			process.env.FEEDBACK_SHEET,
-			interaction.channel.parentId === "1366682576223207424"
-				? "Focus Group Suggestions!A2:Z"
-				: "Suggestion!A2:Z",
+		await Sheets.appendRow(process.env.FEEDBACK_SHEET, sheetRange, [
 			[
-				[
-					interaction.user.id,
-					interaction.user.username,
-					userData.governorId,
-					userData.platform,
-					userData.details,
-					userData.rating,
-					date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
-					userData.screenshotFunction,
-				],
+				interaction.user.id,
+				interaction.user.username,
+				userData.governorId,
+				userData.platform,
+				userData.details,
+				userData.rating,
+				date.format(new Date(), "MM-DD-YYYY HH:mm [GMT]ZZ"),
+				userData.screenshotFunction,
 			],
-		);
+		]);
 
 		await thread.send({
 			content: bold("This thread will be deleted in 10 seconds."),
 		});
-
-		setTimeout(function () {
-			thread.delete().catch();
-		}, 10_000);
+		setTimeout(() => thread.delete().catch(() => {}), 10_000);
 	},
 };
