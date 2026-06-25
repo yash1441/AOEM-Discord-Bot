@@ -1,156 +1,226 @@
-const { EmbedBuilder, ActionRowBuilder, inlineCode, bold, italic, blockQuote } = require('discord.js');
-const date = require('date-and-time');
-const Sheets = require('../../utils/sheets');
-const ImgBB = require('../../utils/imgbb');
+const {
+	EmbedBuilder,
+	ActionRowBuilder,
+	StringSelectMenuBuilder,
+	ComponentType,
+	inlineCode,
+	bold,
+	italic,
+	blockQuote,
+} = require("discord.js");
+const date = require("date-and-time");
+const Sheets = require("../../utils/sheets");
+const ImgBB = require("../../utils/imgbb");
 
-require('dotenv').config();
+require("dotenv").config();
 
 module.exports = {
-    cooldown: 10,
-    data: {
-        name: 'startConversationTranslationIssue',
-    },
-    async execute(interaction) {
-        const endConversation = new ActionRowBuilder().addComponents(interaction.message.components[0].components[1]);
-        const thread = interaction.channel;
-        await interaction.update({ components: [endConversation] });
+	cooldown: 10,
+	data: {
+		name: "startConversationTranslationIssue",
+	},
+	async execute(interaction) {
+		const thread = interaction.channel;
+		await interaction.update({
+			components: [
+				new ActionRowBuilder().addComponents(
+					interaction.message.components[0].components[1],
+				),
+			],
+		});
 
-        let timedOut = false;
-        const userData = {
-            discordId: interaction.user.id,
-            discordUsername: interaction.user.username,
-        }
+		const userData = {
+			discordId: interaction.user.id,
+			discordUsername: interaction.user.username,
+			governorId: "-",
+			details: "-",
+			platform: "-",
+			deviceInfo: "-",
+			timeOfOccurence: "-",
+			screenshot: null,
+			screenshotFunction: "-",
+		};
 
-        const collectorFilter = m => interaction.user.id === m.author.id;
+		const collectorFilter = (message) =>
+			message.author.id === userData.discordId;
 
-        await thread.send({ content: blockQuote(bold('Firstly, please provide your Governor ID.\n')) + italic('(Only text message can be recorded)') });
+		const deleteThread = async (notice) => {
+			await thread.send({ content: bold(notice) }).catch(() => {});
+			setTimeout(() => thread.delete().catch(() => {}), 2_000);
+		};
 
-        await thread.awaitMessages({
-            filter: collectorFilter,
-            time: 3_00_000,
-            max: 1,
-            errors: ['time']
-        }).then(messages => {
-            userData.governorId = messages.first().content;
-            thread.send({ content: 'Received. Next question.' });
-        }).catch(() => {
-            timedOut = true;
-        });
+		const collectMessage = async (content, timeout) => {
+			await thread.send({ content });
+			const collected = await thread.awaitMessages({
+				filter: collectorFilter,
+				time: timeout,
+				max: 1,
+				errors: ["time"],
+			});
+			return collected.first();
+		};
 
-        if (timedOut) {
-            await thread.send({ content: bold('You did not provide your Governor ID in time. This thread will be deleted.') }).catch();
-            setTimeout(function () {
-                thread.delete().catch();
-            }, 2_000);
-            return;
-        }
+		const collectSelect = async (content, menu) => {
+			const prompt = await thread.send({
+				content,
+				components: [new ActionRowBuilder().addComponents(menu)],
+			});
+			const selection = await prompt.awaitMessageComponent({
+				filter: (menuInteraction) =>
+					menuInteraction.user.id === userData.discordId,
+				componentType: ComponentType.StringSelect,
+				time: 3_00_000,
+				errors: ["time"],
+			});
+			await selection.update({
+				content: "Platform received. Next question.",
+				components: [],
+			});
+			return selection.values[0] || "-";
+		};
 
-        await thread.send({ content: blockQuote(bold('Please give a detailed description of the problem you have encountered, preferably with a screenshot to help us quickly determine the root cause of the problem.')) });
+		try {
+			const governorMessage = await collectMessage(
+				blockQuote(bold("Firstly, please provide your Governor ID.\n")) +
+					italic("(Only text message can be recorded)"),
+				3_00_000,
+			);
+			userData.governorId = governorMessage.content || "-";
+			await thread.send({ content: "Received. Next question." });
+		} catch {
+			return deleteThread(
+				"You did not provide your Governor ID in time. This thread will be deleted.",
+			);
+		}
 
-        await thread.awaitMessages({
-            filter: collectorFilter,
-            time: 6_00_000,
-            max: 1,
-            errors: ['time']
-        }).then(messages => {
-            userData.details = (messages.first().content) ? messages.first().content : "-";
+		try {
+			const detailMessage = await collectMessage(
+				blockQuote(
+					bold(
+						"Please give a detailed description of the problem you have encountered, preferably with a screenshot to help us quickly determine the root cause of the problem.",
+					),
+				),
+				6_00_000,
+			);
+			userData.details = detailMessage.content || "-";
 
-            const attachment = messages.first().attachments.first();
-            if (attachment && attachment.contentType.includes('image')) userData.screenshot = attachment.proxyURL;
+			const attachment = detailMessage.attachments.first();
+			if (attachment?.contentType?.startsWith("image")) {
+				userData.screenshot = attachment.proxyURL;
+			}
 
-            thread.send({ content: 'Thanks a lot for your feedback. Now, we need collect some basic information.' });
-        }).catch(() => {
-            timedOut = true;
-        });
+			await thread.send({
+				content:
+					"Thanks a lot for your feedback. Now, we need collect some basic information.",
+			});
+		} catch {
+			return deleteThread(
+				"You did not provide detailed description in time. This thread will be deleted.",
+			);
+		}
 
-        if (timedOut) {
-            await thread.send({ content: bold('You did not provide detailed description in time. This thread will be deleted.') }).catch();
-            setTimeout(function () {
-                thread.delete().catch();
-            }, 2_000);
-            return;
-        }
+		try {
+			const platformMenu = new StringSelectMenuBuilder()
+				.setCustomId("translation-platform")
+				.setPlaceholder("Select your platform")
+				.addOptions(
+					{ label: "PC Edition", value: "PC Edition", emoji: "🖥️" },
+					{ label: "Mobile Version", value: "Mobile Version", emoji: "📱" },
+				);
 
-        await thread.send({ content: blockQuote(bold('Please provide your device model, operating system, and game version in a single message.\n')) + italic('(Only text message can be recorded)') });
+			userData.platform = await collectSelect(
+				blockQuote(bold("Which platform are you playing on?")),
+				platformMenu,
+			);
+		} catch {
+			return deleteThread(
+				"You did not choose your platform in time. This thread will be deleted.",
+			);
+		}
 
-        await thread.awaitMessages({
-            filter: collectorFilter,
-            time: 3_00_000,
-            max: 1,
-            errors: ['time']
-        }).then(messages => {
-            userData.deviceInfo = (messages.first().content) ? messages.first().content : "-";
-            thread.send({ content: 'Received. One last question!' });
-        }).catch(() => {
-            timedOut = true;
-        });
+		try {
+			const deviceMessage = await collectMessage(
+				blockQuote(
+					bold(
+						"Please provide your device model, operating system, and game version in a single message.\n",
+					),
+				) + italic("(Only text message can be recorded)"),
+				3_00_000,
+			);
+			userData.deviceInfo = deviceMessage.content || "-";
+			await thread.send({ content: "Received. One last question!" });
+		} catch {
+			return deleteThread(
+				"You did not provide device info in time. This thread will be deleted.",
+			);
+		}
 
-        if (timedOut) {
-            await thread.send({ content: bold('You did not provide device info in time. This thread will be deleted.') }).catch();
-            setTimeout(function () {
-                thread.delete().catch();
-            }, 2_000);
-            return;
-        }
+		try {
+			const timeMessage = await collectMessage(
+				blockQuote(
+					bold(
+						"What time did this issue occur (server time, UTC+0)? Is it mandatory or occasional?\n",
+					),
+				) + italic("(Only text message can be recorded)"),
+				3_00_000,
+			);
+			userData.timeOfOccurence = timeMessage.content || "-";
+			await thread.send({
+				content:
+					"Thanks for your patience. Your feedback is important for the smooth operation of the game. If the problem you reported is verified to be genuine, the official will provide you a reward in the future.",
+			});
+		} catch {
+			return deleteThread(
+				"You did not provide time of occurence in time. This thread will be deleted.",
+			);
+		}
 
-        await thread.send({ content: blockQuote(bold('What time did this issue occur (server time, UTC+0)? Is it mandatory or occasional?\n')) + italic('(Only text message can be recorded)') });
+		const embed = new EmbedBuilder()
+			.setTitle("Translation Issue")
+			.setAuthor({
+				name: interaction.user.username,
+				iconURL: interaction.user.displayAvatarURL(),
+			})
+			.setDescription(bold("Details") + "\n" + userData.details)
+			.addFields(
+				{ name: "Governor ID", value: inlineCode(userData.governorId) },
+				{ name: "Platform", value: userData.platform },
+				{ name: "Device Info", value: userData.deviceInfo },
+				{ name: "Time of Occurence", value: userData.timeOfOccurence },
+			)
+			.setColor("Blue")
+			.setTimestamp();
 
-        await thread.awaitMessages({
-            filter: collectorFilter,
-            time: 3_00_000,
-            max: 1,
-            errors: ['time']
-        }).then(messages => {
-            userData.timeOfOccurence = (messages.first().content) ? messages.first().content : "-";
-            thread.send({ content: 'Thanks for your patience. Your feedback is important for the smooth operation of the game. If the problem you reported is verified to be genuine, the official will provide you a reward in the future.' });
-        }).catch(() => {
-            timedOut = true;
-        });
+		if (userData.screenshot) {
+			userData.screenshotUrl = await ImgBB(userData.screenshot);
+			userData.screenshotFunction = `=HYPERLINK("${userData.screenshotUrl}", IMAGE("${userData.screenshotUrl}", 1))`;
+			embed.setImage(userData.screenshotUrl);
+		}
 
-        if (timedOut) {
-            await thread.send({ content: bold('You did not provide time of occurence in time. This thread will be deleted.') }).catch();
-            setTimeout(function () {
-                thread.delete().catch();
-            }, 2_000);
-            return;
-        }
+		const channel = interaction.client.channels.cache.get(
+			process.env.TRANSLATION_CHANNEL,
+		);
+		if (!channel) throw new Error("Channel not found");
+		await channel.send({ embeds: [embed] });
 
-        if (!userData.governorId) userData.governorId = '-';
-        if (!userData.details) userData.details = '-';
-        if (!userData.deviceInfo) userData.deviceInfo = '-';
-        if (!userData.timeOfOccurence) userData.timeOfOccurence = '-';
+		const now = new Date();
+		await Sheets.appendRow(process.env.FEEDBACK_SHEET, "Translation!A2:Z", [
+			[
+				interaction.user.id,
+				interaction.user.username,
+				userData.governorId,
+				userData.platform,
+				userData.details,
+				userData.deviceInfo,
+				userData.timeOfOccurence,
+				date.format(now, "MM-DD-YYYY HH:mm [GMT]ZZ"),
+				userData.screenshotFunction,
+			],
+		]);
 
-        const embed = new EmbedBuilder()
-            .setTitle('Translation Issue')
-            .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
-            .setDescription(bold('Details') + '\n' + userData.details)
-            .addFields(
-                { name: 'Governor ID', value: inlineCode(userData.governorId) },
-                { name: 'Device Info', value: userData.deviceInfo },
-                { name: 'Time of Occurence', value: userData.timeOfOccurence }
-            )
-            .setColor('Blue')
-            .setTimestamp();
-
-        if (userData.screenshot) {
-            userData.screenshotUrl = await ImgBB(userData.screenshot);
-            userData.screenshotFunction = '=HYPERLINK("' + userData.screenshotUrl + '", IMAGE("' + userData.screenshotUrl + '", 1))'
-            embed.setImage(userData.screenshotUrl);
-        } else {
-            userData.screenshotFunction = '-'
-        }
-
-        const channel = interaction.client.channels.cache.get(process.env.TRANSLATION_CHANNEL);
-        await channel.send({ embeds: [embed] });
-
-        const now = new Date();
-
-        await Sheets.appendRow(process.env.FEEDBACK_SHEET, 'Translation!A2:Z', [[interaction.user.id, interaction.user.username, userData.governorId, userData.details, userData.deviceInfo, userData.timeOfOccurence, date.format(now, 'MM-DD-YYYY HH:mm [GMT]ZZ'), userData.screenshotFunction]]);
-
-        await thread.send({ content: bold('This thread will be deleted in 10 seconds.') });
-
-        setTimeout(function () {
-            thread.delete().catch();
-        }, 10_000);
-    },
+		await thread.send({
+			content: bold("This thread will be deleted in 10 seconds."),
+		});
+		setTimeout(() => thread.delete().catch(() => {}), 10_000);
+	},
 };
