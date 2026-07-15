@@ -11,7 +11,7 @@ module.exports = {
 		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
 		const gameLink =
-			"https://download.aoemobile.com/apk/AOEM_And_D_v1.13.20.2_AOEM_T11_Pioneer.apk";
+			"https://download.aoemobile.com/apk/AOEM_And_D_v1.13.103.4_AOEM_T11_Pioneer.apk";
 
 		const record = await Sheets.findRow(
 			process.env.PIONEER_REGISTRATION_SHEET,
