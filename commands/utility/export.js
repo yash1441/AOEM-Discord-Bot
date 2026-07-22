@@ -1,4 +1,9 @@
-const { SlashCommandBuilder, codeBlock, MessageFlags } = require("discord.js");
+const {
+	SlashCommandBuilder,
+	codeBlock,
+	MessageFlags,
+	PermissionFlagsBits,
+} = require("discord.js");
 
 module.exports = {
 	cooldown: 5,
