@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, codeBlock } = require("discord.js");
+const { SlashCommandBuilder, codeBlock, MessageFlags } = require("discord.js");
 
 module.exports = {
 	cooldown: 5,
@@ -14,14 +14,14 @@ module.exports = {
 		if (!ownerId) {
 			return interaction.reply({
 				content: "MY_ID is not configured on this bot.",
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 
 		if (interaction.user.id !== ownerId) {
 			return interaction.reply({
 				content: "You are not authorized to use this command.",
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 
@@ -34,20 +34,20 @@ module.exports = {
 			if (content.length <= 1900) {
 				return interaction.reply({
 					content: codeBlock(content),
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 
 			const buffer = Buffer.from(content, "utf8");
 			return interaction.reply({
 				files: [{ attachment: buffer, name: "env.txt" }],
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		} catch (err) {
 			console.error("/export error:", err);
 			return interaction.reply({
 				content: "Failed to export environment variables.",
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 	},
