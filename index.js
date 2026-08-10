@@ -7,6 +7,15 @@ const {
 	Collection,
 } = require("discord.js");
 require("dotenv").config();
+
+const requiredEnv = ["BOT_TOKEN", "BOT_ID", "GUILD_ID"];
+for (const name of requiredEnv) {
+	if (!process.env[name]) {
+		console.error(`[FATAL] Missing required environment variable: ${name}`);
+		process.exit(1);
+	}
+}
+
 require("./deploy-commands.js");
 
 const client = new Client({

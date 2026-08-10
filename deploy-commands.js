@@ -3,6 +3,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 require("dotenv").config();
 
+const requiredEnv = ["BOT_TOKEN", "BOT_ID", "GUILD_ID"];
+for (const name of requiredEnv) {
+    if (!process.env[name]) {
+        console.error(`[FATAL] Missing required environment variable: ${name}`);
+        process.exit(1);
+    }
+}
+
 const commands = [];
 
 const foldersPath = path.join(__dirname, 'commands');

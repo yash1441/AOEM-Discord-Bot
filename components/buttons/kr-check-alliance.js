@@ -13,7 +13,7 @@ require("dotenv").config();
 const sequelize = new Sequelize({
     dialect: "sqlite",
     storage: "db/alliance.sqlite",
-    logging: true,
+    logging: false,
 });
 
 const Alliance = sequelize.define(
