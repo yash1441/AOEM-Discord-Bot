@@ -23,9 +23,9 @@ const client = new Client({
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.GuildMembers,
+		//GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.MessageContent,
+		//GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildInvites,
 	],
 	partials: [
