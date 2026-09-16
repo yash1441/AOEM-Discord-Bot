@@ -19,7 +19,7 @@ module.exports = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("setup")
-				.setDescription("Setup register embed and buttons")
+				.setDescription("Setup register embed and buttons"),
 		),
 	async execute(interaction) {
 		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
@@ -29,24 +29,24 @@ module.exports = {
 			.setColor("White")
 			.addFields(
 				{
-					name: "Registration Period: 1.22 - 1.23, 00:00 (UTC)",
+					name: "Registration Period: 9.16 - 9.18, 00:00 (UTC)",
 					value:
 						"Click the sign-up button to fill in the necessary information and complete your registration. Please note that each Discord account can only register once, so please fill in your details carefully.",
 					inline: false,
 				},
 				{
-					name: "Qualification Distribution: 1.23 - 1.25",
+					name: "Qualification Distribution: 9.18 - 9.21",
 					value:
 						'During the qualification distribution period, click on the "Check" button to view your registration results. If you are selected, the Bot will send you a CDK to join the Pioneer Server.',
 					inline: false,
 				},
 				{
-					name: "Pioneer Server Testing Period: 1.26 - 2.2",
+					name: "Pioneer Server Testing Period: 9.21 - 9.28",
 					value: "\u200b",
 					inline: false,
-				}
+				},
 			)
-			.setImage("https://i.ibb.co/sps0xNr2/image-2026-01-22-122238362.png")
+			.setImage("https://i.ibb.co/jZjK747x/image-2026-09-16-141136086.png")
 			.setFooter({
 				text: "Age of Empires Mobile",
 				iconURL: "https://i.ibb.co/Fm4fttV/Logo.png",
@@ -65,7 +65,7 @@ module.exports = {
 		// 	.setEmoji("🔍");
 
 		const row = new ActionRowBuilder().addComponents(
-			registerButton
+			registerButton,
 			//checkButton
 		);
 
